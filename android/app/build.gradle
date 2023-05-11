@@ -73,10 +73,3 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
-plugins {
-   
-
-    // Add the Google services Gradle plugin
-    id 'com.google.gms.google-services'
-   
-}

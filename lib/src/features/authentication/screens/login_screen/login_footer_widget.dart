@@ -28,7 +28,7 @@ class LoginFooterWidget extends StatelessWidget {
                 image: AssetImage('assets/images/google.png'),
                 width: 20.0,
               ),
-              onPressed: () => Get.to(GoogleSignInScreen()),
+              onPressed: () {},
               label: Text(tSignInWithGoogle)),
         ),
         SizedBox(

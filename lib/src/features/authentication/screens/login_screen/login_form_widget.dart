@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-//import 'package:login_setup/src/features/authentication/screens/forgot_password/forget_password_options/forget_password_btn_widget.dart';
 import 'package:login_setup/src/features/authentication/screens/forgot_password/forget_password_options/forget_password_model_bottom_sheet.dart';
 
 import '../../../../constants/sizes.dart';
@@ -8,15 +7,18 @@ import '../../../../constants/text_strings.dart';
 import '../../controllers/signup_controller.dart';
 import '../../models/user_model.dart';
 
-class LoginForm extends StatelessWidget {
-  const LoginForm({
-    super.key,
-  });
+class LoginForm extends StatefulWidget {
+  const LoginForm({Key? key}) : super(key: key);
 
   @override
+  _LoginFormState createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final controller = Get.put(SignUpController());
+  @override
   Widget build(BuildContext context) {
-    final controller = Get.put(SignUpController());
-    final _formKey = GlobalKey<FormState>();
     return Form(
         key: _formKey,
         child: Container(
