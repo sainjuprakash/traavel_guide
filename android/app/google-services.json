@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "374672195536",
+    "project_id": "roamify-e9e8f",
+    "storage_bucket": "roamify-e9e8f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374672195536:android:e92b03eae5e3890dc003d5",
+        "android_client_info": {
+          "package_name": "com.example.login_setup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "374672195536-tana2uk1t40lm4mjtd1n04o9ae43dlmr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.login_setup",
+            "certificate_hash": "8a329b98db08ff4df33d4c81eef71b1b5a5df6f2"
+          }
+        },
+        {
+          "client_id": "374672195536-qo4fehm2gblo6cieumh9q0bei2hf1h47.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8kukB55diZYSlY72Y2JoshBtJToahmUs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "374672195536-f4rs13d181ej5c2jtrq6nj3jt6d6b91d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "374672195536-kh3pubdetm26oh8nh8f4cedr0cflvm3o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.loginSetup"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
