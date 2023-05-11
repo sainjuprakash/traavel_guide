@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:login_setup/firebase_options.dart';
 import 'package:login_setup/src/features/authentication/controllers/otp_controller.dart';
-import 'package:login_setup/src/features/authentication/screens/splash_screen/splash_screen.dart';
-import 'package:login_setup/src/features/authentication/screens/welcome/welcome_screen.dart';
 import 'package:login_setup/src/repository/authentication_repository/authentication_repository.dart';
 import 'package:login_setup/src/utils/theme/theme.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
       .then((value) => Get.put(AuthenticationRepository()));
   runApp(const MyApp());
   OTPController();

@@ -35,7 +35,7 @@ class SignupScreen extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         child: OutlinedButton.icon(
-                          onPressed: () => Get.to(GoogleSignInScreen()),
+                          onPressed: () {},
                           icon: Image(
                             image: AssetImage('assets/images/google.png'),
                             width: 20.0,
