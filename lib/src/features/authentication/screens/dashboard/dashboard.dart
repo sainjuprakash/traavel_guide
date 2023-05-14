@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:login_setup/src/common_widgets/cards/category_card.dart';
 import 'package:login_setup/src/common_widgets/cards/recommended_card.dart';
+import 'package:login_setup/src/common_widgets/animation/under_construction/under_construction.dart';
 import 'package:login_setup/src/constants/colors.dart';
 import 'package:login_setup/src/features/authentication/models/place_modal.dart';
 import 'package:login_setup/src/features/authentication/screens/detail_screen/detail_screen.dart';
+import 'package:login_setup/src/features/authentication/screens/map_screen/map_screen.dart';
 import 'package:login_setup/src/features/authentication/screens/profile/profile_screen.dart';
 
 class Dashboard extends StatelessWidget {
@@ -30,19 +32,19 @@ class Dashboard extends StatelessWidget {
                 icon: Icon(Icons.person_outline, size: 30),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () => Get.to(UnderConstruction()),
                 icon: Icon(Icons.favorite_outline, size: 30),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () => Get.to(UnderConstruction()),
                 icon: Icon(Icons.home, size: 30, color: Colors.redAccent),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () => Get.to(MapScreen()),
                 icon: Icon(Icons.location_on_outlined, size: 30),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () => Get.to(UnderConstruction()),
                 icon: Icon(Icons.list, size: 30),
               ),
             ],
@@ -60,7 +62,7 @@ class Dashboard extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 27,
-                      backgroundImage: AssetImage("icons/alexa.png"),
+                      backgroundImage: AssetImage("assets/images/user.png"),
                       backgroundColor: isDark ? tSecondaryClr : tAccentClr,
                     ),
                     SizedBox(
@@ -89,7 +91,7 @@ class Dashboard extends StatelessWidget {
                 ),
                 Text(
                   "Explore new destination",
-                  style: Theme.of(context).textTheme.headline4,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 SizedBox(
                   height: 20,
@@ -137,7 +139,7 @@ class Dashboard extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Text("Category", style: txtTheme.headline4),
+                    Text("Category", style: txtTheme.headlineMedium),
                   ],
                 ),
                 SizedBox(
@@ -208,7 +210,7 @@ class Dashboard extends StatelessWidget {
                   children: [
                     Text(
                       "Recommendation",
-                      style: txtTheme.headline4,
+                      style: txtTheme.headlineMedium,
                     ),
                   ],
                 ),

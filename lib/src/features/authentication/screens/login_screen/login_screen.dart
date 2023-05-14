@@ -5,7 +5,6 @@ import 'package:login_setup/src/constants/sizes.dart';
 import 'package:login_setup/src/constants/text_strings.dart';
 import 'package:login_setup/src/features/authentication/screens/login_screen/login_footer_widget.dart';
 import 'package:login_setup/src/features/authentication/screens/login_screen/login_form_widget.dart';
-import 'package:login_setup/src/features/authentication/screens/login_screen/login_header_widget.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);

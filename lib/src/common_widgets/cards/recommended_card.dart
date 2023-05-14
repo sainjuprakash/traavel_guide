@@ -47,7 +47,7 @@ class RecommendedCard extends StatelessWidget {
                 ),
                 Text(
                   placeInfo.name,
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 SizedBox(
                   height: 8.0,

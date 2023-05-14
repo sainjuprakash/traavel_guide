@@ -26,7 +26,7 @@ class OtpScreen extends StatelessWidget {
           ),
           Text(
             tOtpSubTitle.toUpperCase(),
-            style: Theme.of(context).textTheme.headline6,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           SizedBox(
             height: 40.0,

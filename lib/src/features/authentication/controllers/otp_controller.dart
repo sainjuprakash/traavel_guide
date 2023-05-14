@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:login_setup/src/features/authentication/screens/dashboard/dashboard.dart';
 import 'package:login_setup/src/repository/authentication_repository/authentication_repository.dart';

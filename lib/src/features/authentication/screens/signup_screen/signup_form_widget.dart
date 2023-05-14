@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:login_setup/src/features/authentication/controllers/signup_controller.dart';
 import 'package:login_setup/src/features/authentication/models/user_model.dart';
-import 'package:login_setup/src/features/authentication/screens/forgot_password/forget_password_otp/otp_screen.dart';
 
 import '../../../../constants/sizes.dart';
 import '../../../../constants/text_strings.dart';

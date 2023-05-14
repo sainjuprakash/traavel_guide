@@ -19,11 +19,11 @@ class SplashScreen extends StatelessWidget {
               children: [
                 Text(
                   "hello",
-                  style: Theme.of(context).textTheme.headline3,
+                  style: Theme.of(context).textTheme.displaySmall,
                 ),
                 Text(
                   "Learn To Code.\nFree for Everyone",
-                  style: Theme.of(context).textTheme.headline2,
+                  style: Theme.of(context).textTheme.displayMedium,
                 )
               ],
             ),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:login_setup/src/constants/colors.dart';
+import 'package:login_setup/src/constants/image_strings.dart';
 import 'package:login_setup/src/constants/sizes.dart';
 import 'package:login_setup/src/constants/text_strings.dart';
 import 'package:login_setup/src/features/authentication/screens/login_screen/login_screen.dart';
 import 'package:login_setup/src/features/authentication/screens/signup_screen/signup-screen.dart';
-
-import '../../../../constants/image_strings.dart';
+import 'package:lottie/lottie.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -24,22 +24,23 @@ class WelcomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Image(
-              image: AssetImage(tForgotPasswordImage),
-              fit: BoxFit.cover,
-              height: height * 0.5,
-            ),
-            Column(
-              children: [
-                Text(
-                  tWelcomeTitle,
-                  style: Theme.of(context).textTheme.headline3,
-                ),
-                Text(
-                  tWelcomeSubtitle,
-                  style: Theme.of(context).textTheme.bodyText1,
-                  textAlign: TextAlign.center,
-                ),
-              ],
+                image: AssetImage(tForgotPasswordImage),
+                fit: BoxFit.cover,
+                height: height * 0.5),
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    tWelcomeTitle,
+                    style: Theme.of(context).textTheme.displaySmall,
+                  ),
+                  Text(
+                    tWelcomeSubtitle,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
             Row(
               children: [

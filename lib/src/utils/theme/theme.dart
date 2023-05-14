@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:login_setup/src/utils/theme/widget_themes/elevated_button_theme.dart';
 import 'package:login_setup/src/utils/theme/widget_themes/outline_button_theme.dart';
 import 'package:login_setup/src/utils/theme/widget_themes/text_field_theme.dart';

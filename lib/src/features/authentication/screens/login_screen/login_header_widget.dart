@@ -22,11 +22,11 @@ class LoginHeaderWidget extends StatelessWidget {
         ),
         Text(
           tLoginTitle,
-          style: Theme.of(context).textTheme.headline3,
+          style: Theme.of(context).textTheme.displaySmall,
         ),
         Text(
           tLoginSubtitle,
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
       ],
     );

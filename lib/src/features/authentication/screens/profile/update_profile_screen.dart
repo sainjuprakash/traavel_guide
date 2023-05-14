@@ -32,7 +32,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
             icon: const Icon(LineAwesomeIcons.angle_left)),
         title: Text(
           tEditProfile,
-          style: Theme.of(context).textTheme.headline4,
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
       ),
       body: SingleChildScrollView(

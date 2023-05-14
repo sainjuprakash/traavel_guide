@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:login_setup/src/features/authentication/screens/dashboard/dashboard.dart';
-import 'package:login_setup/src/features/authentication/screens/google_sign_in/google_sign_in.dart';
 import 'package:login_setup/src/features/authentication/screens/signup_screen/signup-screen.dart';
 
 import '../../../../constants/sizes.dart';
@@ -118,7 +117,7 @@ class LoginFooterWidget extends StatelessWidget {
           },
           child: Text.rich(TextSpan(
               text: tDontHaveAnAccount,
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge,
               children: [
                 TextSpan(
                     text: tSignUp.toUpperCase(),

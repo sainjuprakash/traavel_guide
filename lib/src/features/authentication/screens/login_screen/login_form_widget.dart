@@ -5,7 +5,6 @@ import 'package:login_setup/src/features/authentication/screens/forgot_password/
 import '../../../../constants/sizes.dart';
 import '../../../../constants/text_strings.dart';
 import '../../controllers/signup_controller.dart';
-import '../../models/user_model.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);

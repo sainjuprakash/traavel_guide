@@ -18,11 +18,11 @@ class ForgetPasswordScreen {
                 children: [
                   Text(
                     tForgetPasswordTitle,
-                    style: Theme.of(context).textTheme.headline4,
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   Text(
                     tForgetPasswordSubtitle,
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   SizedBox(
                     height: 20.0,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:login_setup/src/features/authentication/models/user_model.dart';
-import 'package:login_setup/src/features/authentication/screens/forgot_password/forget_password_otp/otp_screen.dart';
 
 import '../../../repository/User_repository/user_repository.dart';
 import '../../../repository/authentication_repository/authentication_repository.dart';
