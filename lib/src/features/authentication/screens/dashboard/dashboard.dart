@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:login_setup/src/common_widgets/cards/category_card.dart';
 import 'package:login_setup/src/common_widgets/cards/recommended_card.dart';
 import 'package:login_setup/src/common_widgets/animation/under_construction/under_construction.dart';
@@ -8,6 +9,7 @@ import 'package:login_setup/src/features/authentication/models/place_modal.dart'
 import 'package:login_setup/src/features/authentication/screens/detail_screen/detail_screen.dart';
 import 'package:login_setup/src/features/authentication/screens/map_screen/map_screen.dart';
 import 'package:login_setup/src/features/authentication/screens/profile/profile_screen.dart';
+import 'package:login_setup/src/repository/authentication_repository/authentication_repository.dart';
 
 class Dashboard extends StatelessWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -36,11 +38,11 @@ class Dashboard extends StatelessWidget {
                 icon: Icon(Icons.favorite_outline, size: 30),
               ),
               IconButton(
-                onPressed: () => Get.to(UnderConstruction()),
+                onPressed: () => Get.to(Dashboard()),
                 icon: Icon(Icons.home, size: 30, color: Colors.redAccent),
               ),
               IconButton(
-                onPressed: () => Get.to(MapScreen()),
+                onPressed: () => Get.to(MapView()),
                 icon: Icon(Icons.location_on_outlined, size: 30),
               ),
               IconButton(
@@ -60,10 +62,17 @@ class Dashboard extends StatelessWidget {
                 /*******APP_BAR********/
                 Row(
                   children: [
-                    CircleAvatar(
-                      radius: 27,
-                      backgroundImage: AssetImage("assets/images/user.png"),
-                      backgroundColor: isDark ? tSecondaryClr : tAccentClr,
+                    InkWell(
+                      onTap: () {
+                        AuthenticationRepository.instance.logout();
+                        GoogleSignIn().signOut();
+                        Navigator.pop(context);
+                      },
+                      child: CircleAvatar(
+                        radius: 27,
+                        backgroundImage: AssetImage("assets/images/user.png"),
+                        backgroundColor: isDark ? tSecondaryClr : tAccentClr,
+                      ),
                     ),
                     SizedBox(
                       width: 15,

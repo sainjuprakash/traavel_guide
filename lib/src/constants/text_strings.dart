@@ -67,3 +67,26 @@ const String tMenu4 = 'User Management';
 const String tDelete = 'Delete';
 const String tJoined = 'Joined ';
 const String tJoinedAt = ' 20 May 2023';
+
+//SnackBar
+const String tAlert = 'Alert';
+const String tOhSnap = 'Oh Snap';
+const String tEmailSent = 'Hurray!! Email is on its way';
+const String tCongratulations = 'Congratulations';
+const String tEmailLinkToResetPassword = 'Email Link To Reset Password';
+const String tAccountCreateVerifyEmail = 'Account Create Verify Email';
+
+//validation
+const String tEmailCannotEmpty = 'Email Cannot be Empty';
+const String tInvalidEmailFormat = 'Invalid email format';
+const String tNoRecordFound = 'No record found';
+
+//Email Verification
+const String tEmailVerificationTitle = 'Verify your email address';
+const String tEmailVerificationSubtitle =
+    '''we have just send email verification link on your email.please check email and click on that link to verify your Email address.
+if not auto redirected after verification , click on the Continue button
+''';
+const String tContinue = 'Continue';
+const String tResendEmailLink = 'Resend E-Mail Link';
+const String tBackToLogin = 'back to login';
