@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:login_setup/src/constants/text_strings.dart';
+import 'package:login_setup/src/features/authentication/controllers/helper_copntroller.dart';
 import 'package:login_setup/src/features/authentication/models/user_model.dart';
 
 import '../../../repository/User_repository/user_repository.dart';
@@ -7,6 +9,7 @@ import '../../../repository/authentication_repository/authentication_repository.
 
 class SignUpController extends GetxController {
   static SignUpController get instance => Get.find();
+  final isLoading = false.obs;
 
   //TextField Controllers to get data from TextFields
   final email = TextEditingController();
@@ -14,6 +17,8 @@ class SignUpController extends GetxController {
   final fullName = TextEditingController();
   final phoneNo = TextEditingController();
   final userRepo = Get.put(UserRepository());
+
+  GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
 
   // get phoneAuthentication => null;
 
@@ -28,9 +33,14 @@ class SignUpController extends GetxController {
     }
   }
 
-  void LoginUser(String email, String password) {
-    AuthenticationRepository.instance
-        .LoginWithEmailAndPAssword(email, password);
+  Future<void> LoginUser(String email, String password) async {
+    try {
+      final auth = AuthenticationRepository.instance;
+      await auth.LoginWithEmailAndPAssword(email, password);
+    } catch (e) {
+      isLoading.value = false;
+      Helper.errorSnackBar(title: tOhSnap, message: e.toString());
+    }
   }
 
   Future<void> createUser(UserModel user) async {

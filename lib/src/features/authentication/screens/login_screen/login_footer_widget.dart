@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:login_setup/src/features/authentication/controllers/login_controller.dart';
 import 'package:login_setup/src/features/authentication/screens/dashboard/dashboard.dart';
 import 'package:login_setup/src/features/authentication/screens/signup_screen/signup-screen.dart';
-
+import 'package:login_setup/src/utils/helper/helper.dart';
 import '../../../../constants/sizes.dart';
 import '../../../../constants/text_strings.dart';
 
@@ -12,6 +13,7 @@ class LoginFooterWidget extends StatelessWidget {
   const LoginFooterWidget({
     Key? key,
   }) : super(key: key);
+
   Future<void> _handleSignIn() async {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -41,7 +43,7 @@ class LoginFooterWidget extends StatelessWidget {
       final UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
 
-      // Navigate to dashboard on success
+      // Navigate to the dashboard on success
       Get.offAll(Dashboard());
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exists-with-different-credential') {
@@ -90,6 +92,7 @@ class LoginFooterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(LoginController());
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -104,7 +107,11 @@ class LoginFooterWidget extends StatelessWidget {
                 image: AssetImage('assets/images/google.png'),
                 width: 20.0,
               ),
-              onPressed: _handleSignIn,
+              onPressed: controller.isLoading.value
+                  ? () {}
+                  : controller.isGoogleLoading.value
+                      ? () {}
+                      : () => controller.googleSignIn(),
               label: Text(tSignInWithGoogle)),
         ),
         SizedBox(

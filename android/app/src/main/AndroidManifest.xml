@@ -4,6 +4,10 @@
         android:label="login_setup"
         
         android:icon="@mipmap/ic_launcher">
+        
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyChbF-Xx2PxHyebj6SjVSd4IKWIx4lpO4M" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -21,9 +25,6 @@
               android:resource="@style/NormalTheme"
               />
 
-            <meta-data
-                android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyC9UlnfkNABPM05BDhYTpfBH65hW7d96GI" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

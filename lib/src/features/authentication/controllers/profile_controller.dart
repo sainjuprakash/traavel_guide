@@ -11,16 +11,16 @@ class ProfileController extends GetxController {
   final _userRepo = Get.put(UserRepository());
 
   // Get User Email and pass it to UserRepository to fetch user record
-  Future<UserModel?> getUserData() async {
-    final user = _authRepo.firebaseUser.value;
-    if (user != null) {
-      final email = user.email;
-      if (email != null) {
-        return _userRepo.getUserDetails(email);
-      }
+  getUserData() {
+    //final user = _authRepo.firebaseUser.value?.email;
+    final email = _authRepo.firebaseUser!.email;
+    if (email != null) {
+      return _userRepo.getUserDetails(email);
+    } else {
+      throw Exception("User email is null");
+      // Alternatively, you can return a default UserModel instance
+      // return UserModel();
     }
-    Get.snackbar("Error", "Login to continue");
-    return null;
   }
 
   Future<List<UserModel>> getAllUser() async {

@@ -2,9 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:login_setup/src/features/authentication/screens/dashboard/dashboard.dart';
+import 'package:login_setup/src/features/authentication/screens/login_screen/login_screen.dart';
 import 'package:login_setup/src/features/authentication/screens/welcome/welcome_screen.dart';
 import 'package:login_setup/src/repository/authentication_repository/exceptions/signup_email_password_failure.dart';
+import 'package:login_setup/src/repository/authentication_repository/exceptions/t_exception.dart';
 
 import '../../features/authentication/screens/forgot_password/forget_password_otp/otp_screen.dart';
 
@@ -12,17 +15,23 @@ class AuthenticationRepository extends GetxController {
   static AuthenticationRepository get instance => Get.find();
   //Variables
   final _auth = FirebaseAuth.instance;
-  late final Rx<User?> firebaseUser;
+  late final Rx<User?> _firebaseUser;
   var verificationId = ''.obs;
+
+  //Getters
+  User? get firebaseUser => _firebaseUser.value!;
+  String get getUserID => firebaseUser?.uid ?? '';
+  String get getUserEmail => firebaseUser?.email ?? '';
 
   @override
   void onReady() {
-    firebaseUser = Rx<User?>(_auth.currentUser);
-    firebaseUser.bindStream(_auth.userChanges());
-    ever(firebaseUser, _setInitialScreen);
+    _firebaseUser = Rx<User?>(_auth.currentUser);
+    _firebaseUser.bindStream(_auth.userChanges());
+    //ever(firebaseUser, _setInitialScreen);
+    setInitialScreen(_firebaseUser.value);
   }
 
-  _setInitialScreen(User? user) {
+  setInitialScreen(User? user) {
     user == null
         ? Get.offAll(() => const WelcomeScreen())
         : Get.offAll(() => const Dashboard());
@@ -76,11 +85,35 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
+  Future<UserCredential> signInWthGoogle() async {
+    try {
+      //Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      //obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      //create a new credential
+      final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
+//once signed in,return the UserCredential
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      final ex = TExceptions.fromCode(e.code);
+
+      throw ex;
+    } catch (_) {
+      const ex = TExceptions();
+      throw ex.message;
+    }
+  }
+
   Future<void> LoginWithEmailAndPAssword(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
 
-      firebaseUser.value != null
+      _firebaseUser.value != null
           ? Get.offAll(() => Dashboard())
           : Get.offAll(() => WelcomeScreen());
     } on FirebaseAuthException catch (e) {
@@ -97,5 +130,19 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
-  Future<void> logout() async => await _auth.signOut();
+  Future<void> logout() async {
+    try {
+      await GoogleSignIn().signOut();
+      await FirebaseAuth.instance.signOut();
+      Get.offAll(() => const LoginScreen());
+    } on FirebaseAuthException catch (e) {
+      throw e.message!;
+    } on FormatException catch (e) {
+      throw e.message;
+    } catch (e) {
+      throw 'unable to logout.try again.';
+    }
+  }
+
+  //void setInitialScreen(Rx<User?> firebaseUser) {}
 }

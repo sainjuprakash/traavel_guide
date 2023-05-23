@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:login_setup/src/features/authentication/controllers/login_controller.dart';
+import 'package:login_setup/src/features/authentication/controllers/signup_controller.dart';
 import 'package:login_setup/src/features/authentication/screens/forgot_password/forget_password_options/forget_password_model_bottom_sheet.dart';
 
 import '../../../../constants/sizes.dart';
@@ -16,6 +18,8 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final controller = Get.put(SignUpController());
+  bool _obscurePassword = true; // Variable to toggle password visibility
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -44,26 +48,40 @@ class _LoginFormState extends State<LoginForm> {
                   },
                   controller: controller.email,
                   decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.person_outline_outlined),
-                      labelText: tEmail,
-                      hintText: tEmail,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(100))),
+                    prefixIcon: Icon(Icons.person_outline_outlined),
+                    labelText: tEmail,
+                    hintText: tEmail,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                  ),
                 ),
                 SizedBox(
                   height: tFormHeight,
                 ),
                 TextFormField(
                   controller: controller.password,
+                  obscureText: _obscurePassword, // Toggle password visibility
                   decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.fingerprint),
-                      labelText: tPassword,
-                      hintText: tPassword,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(100)),
-                      suffixIcon: IconButton(
-                          onPressed: null,
-                          icon: Icon(Icons.remove_red_eye_sharp))),
+                    prefixIcon: Icon(Icons.fingerprint),
+                    labelText: tPassword,
+                    hintText: tPassword,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                    ),
+                  ),
                 ),
                 SizedBox(
                   height: tFormHeight,
