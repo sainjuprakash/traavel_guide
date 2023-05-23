@@ -11,8 +11,7 @@ class UnderConstruction extends StatelessWidget {
         body: ListView(
           children: [
             // Load a Lottie file from a remote url
-            Lottie.network(
-                'https://assets3.lottiefiles.com/private_files/lf30_y9czxcb9.json'),
+            Lottie.asset('assets/images/under_construction.json'),
           ],
         ),
       ),
