@@ -18,20 +18,15 @@ class AuthenticationRepository extends GetxController {
   late final Rx<User?> _firebaseUser;
   var verificationId = ''.obs;
 
-  //Getters
-  User? get firebaseUser => _firebaseUser.value!;
-  String get getUserID => firebaseUser?.uid ?? '';
-  String get getUserEmail => firebaseUser?.email ?? '';
-
+  User? get firebaseUser => _firebaseUser.value;
   @override
   void onReady() {
     _firebaseUser = Rx<User?>(_auth.currentUser);
     _firebaseUser.bindStream(_auth.userChanges());
-    //ever(firebaseUser, _setInitialScreen);
-    setInitialScreen(_firebaseUser.value);
+    ever(_firebaseUser, _setInitialScreen);
   }
 
-  setInitialScreen(User? user) {
+  _setInitialScreen(User? user) {
     user == null
         ? Get.offAll(() => const WelcomeScreen())
         : Get.offAll(() => const Dashboard());

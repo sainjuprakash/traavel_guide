@@ -18,7 +18,7 @@ class LoginController extends GetxController {
   final isGoogleLoading = false.obs;
 
   //EmailAndpasswordLogin
-  Future<void> login() async {
+  Future<void> login(String email, String password) async {
     try {
       isLoading.value = true;
       if (!loginFormKey.currentState!.validate()) {
@@ -26,9 +26,7 @@ class LoginController extends GetxController {
         return;
       }
       final auth = AuthenticationRepository.instance;
-      await auth.LoginWithEmailAndPAssword(
-          email.text.trim(), password.text.trim());
-      auth.setInitialScreen(auth.firebaseUser);
+      await auth.LoginWithEmailAndPAssword(email, password);
     } catch (e) {
       isLoading.value = false;
       Helper.errorSnackBar(title: tOhSnap, message: e.toString());
