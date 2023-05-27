@@ -2,41 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:flutter/services.dart' show rootBundle;
+//import 'package:flutter/services.dart' show rootBundle;
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 import 'package:login_setup/src/constants/colors.dart';
-
-// class MapView extends StatefulWidget {
-//   @override
-//   _MapViewState createState() => _MapViewState();
-// }
-
-// class _MapViewState extends State<MapView> {
-//   late GoogleMapController mapController;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Google MAPS'),
-//       ),
-//       body: GoogleMap(
-//         onMapCreated: _onMapCreated,
-//         initialCameraPosition: CameraPosition(
-//           target: LatLng(37.7749, -122.4194),
-//           zoom: 12,
-//         ),
-//       ),
-//     );
-//   }
-
-//   void _onMapCreated(GoogleMapController controller) {
-//     setState(() {
-//       mapController = controller;
-//     });
-//   }
-// }
+import 'package:login_setup/src/features/authentication/controllers/profile_controller.dart';
+import 'package:login_setup/src/features/authentication/models/user_model.dart';
 
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
@@ -46,15 +17,16 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
-  String? _mapStyle;
-  @override
-  void initState() {
-    super.initState();
+  final controller = Get.put(ProfileController());
+  //String? _mapStyle;
+  // @override
+  // void initState() {
+  //   super.initState();
 
-    rootBundle.loadString('assets/images/map_style.txt').then((string) {
-      _mapStyle = string;
-    });
-  }
+  //   rootBundle.loadString('assets/images/map_style.txt').then((string) {
+  //     _mapStyle = string;
+  //   });
+  // }
 
   final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(27.672845084463354, 85.42860344085487),
@@ -76,7 +48,7 @@ class _MapViewState extends State<MapView> {
               zoomControlsEnabled: false,
               onMapCreated: (GoogleMapController controller) {
                 myMapController = controller;
-                myMapController!.setMapStyle(_mapStyle);
+                //myMapController!.setMapStyle(_mapStyle);
               },
               initialCameraPosition: _kGooglePlex,
               markers: {
@@ -86,7 +58,8 @@ class _MapViewState extends State<MapView> {
                 ),
               }),
         ),
-        buildProfileTile(isDark),
+        buildProfileTile(controller, isDark),
+        //placesAutoCompleteTextField(),
         buildTextField(isDark),
         buildCurrentLocationIcon(isDark),
         buildNotificationIcon(),
@@ -96,28 +69,8 @@ class _MapViewState extends State<MapView> {
   }
 }
 
-TextEditingController controller = TextEditingController();
-Future<TextSelection> showGoogleAutoComplete() async {
-  GooglePlaceAutoCompleteTextField(
-      textEditingController: controller,
-      googleAPIKey: "AIzaSyChbF-Xx2PxHyebj6SjVSd4IKWIx4lpO4M",
-      inputDecoration: InputDecoration(),
-      debounceTime: 800, // default 600 ms,
-      countries: ["in", "fr"], // optional by default null is set
-      isLatLngRequired: true, // if you required coordinates from place detail
-      getPlaceDetailWithLatLng: (Prediction? prediction) {
-        // this method will return latlng with place detail
-        print("placeDetails" + prediction!.lng.toString());
-      }, // this callback is called when isLatLngRequired is true
-      itmClick: (Prediction? prediction) {
-        controller.text = prediction!.description!;
-        controller.selection = TextSelection.fromPosition(
-            TextPosition(offset: prediction.description!.length));
-      });
-  return controller.selection;
-}
-
-Widget buildTextField(bool isDark) {
+Widget buildTextField(isDark) {
+  TextEditingController controller = TextEditingController();
   return Positioned(
     top: 170,
     left: 20,
@@ -128,90 +81,132 @@ Widget buildTextField(bool isDark) {
       padding: EdgeInsets.only(left: 15),
       decoration: BoxDecoration(
         color: isDark ? tSecondaryClr : tWhiteClr,
-        borderRadius: BorderRadius.circular(100),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              spreadRadius: 4,
-              blurRadius: 10)
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextFormField(
-              style: TextStyle(color: isDark ? tPrimaryClr : tDarkClr),
-              decoration: InputDecoration(
-                  hintText: "Search your destination",
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none),
-            ),
-          ),
-          CircleAvatar(
-            radius: 22,
-            backgroundColor: tPrimaryClr,
-            child: Icon(
-              Icons.search,
-              color: tWhiteClr,
-            ),
+            color: Colors.black.withOpacity(0.05),
+            spreadRadius: 4,
+            blurRadius: 10,
           )
         ],
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: GooglePlaceAutoCompleteTextField(
+        textEditingController: controller,
+        googleAPIKey: "Your_Api_Key",
+        inputDecoration: InputDecoration(
+          // hintStyle: GoogleFonts.poppins(
+          //   fontSize: 16,
+          //   fontWeight: FontWeight.bold,
+          // ),
+          hintStyle: TextStyle(
+            color: isDark ? tCardBgClr : tDarkClr,
+          ),
+          hintText: 'Search for a destination',
+          prefixIcon: Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: Icon(
+              Icons.search,
+              color: isDark ? tCardBgClr : tDarkClr,
+            ),
+          ),
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+        ),
+        debounceTime: 800, // default 600 ms
+        countries: ["NP"], // optional: restrict results to specific countries
+        isLatLngRequired: true, // if you require coordinates from place detail
+        getPlaceDetailWithLatLng: (Prediction prediction) {
+          // This method will return latlng with place detail
+          print("Place details: ${prediction.lng.toString()}");
+        }, // this callback is called when isLatLngRequired is true
+        itmClick: (Prediction prediction) {
+          controller.text = prediction.description!;
+          controller.selection = TextSelection.fromPosition(
+            TextPosition(offset: prediction.description!.length),
+          );
+        },
       ),
     ),
   );
 }
 
-Widget buildProfileTile(bool isDark) {
+Widget buildProfileTile(controller, isDark) {
   return Positioned(
       top: 60,
       left: 20,
       right: 20,
-      child: Container(
-        width: Get.width,
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: AssetImage("assets/images/user.png"),
-                        fit: BoxFit.fill)),
-              ),
-              SizedBox(
-                width: 15,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RichText(
-                      text: TextSpan(children: [
-                    TextSpan(
-                        text: 'Good Morning, ',
-                        style: TextStyle(
-                            color: isDark ? tCardBgClr : tDarkClr,
-                            fontSize: 14)),
-                    TextSpan(
-                        text: 'Sijal',
-                        style: TextStyle(
-                            color: Colors.green,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold))
-                  ])),
-                  Text(
-                    "Where are you going?",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? tCardBgClr : tDarkClr),
-                  )
-                ],
-              )
-            ]),
-      ));
+      child: FutureBuilder(
+          future: controller.getUserData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData) {
+                // User data is available
+                UserModel user = snapshot.data as UserModel;
+                final fullname = TextEditingController(text: user.fullname);
+
+                return Container(
+                  width: Get.width,
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  image: AssetImage("assets/images/user.png"),
+                                  fit: BoxFit.fill)),
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                                text: TextSpan(children: [
+                              TextSpan(
+                                  text: 'Good Morning, ',
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 14)),
+                              TextSpan(
+                                  text: fullname.text,
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold))
+                            ])),
+                            Text(
+                              "Where are you going?",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            )
+                          ],
+                        )
+                      ]),
+                );
+              } else if (snapshot.hasError) {
+                return Column(
+                  children: [
+                    Center(
+                      child: Text(snapshot.error.toString()),
+                    ),
+                  ],
+                );
+              } else {
+                // Data is still loading
+                return Center(child: CircularProgressIndicator());
+              }
+            } else {
+              // Data is still loading
+              return Center(child: CircularProgressIndicator());
+            }
+          }));
 }
 
 Widget buildCurrentLocationIcon(bool isDark) {
