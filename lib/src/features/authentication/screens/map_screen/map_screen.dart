@@ -69,7 +69,7 @@ class _MapViewState extends State<MapView> {
   }
 }
 
-Widget buildTextField(isDark) {
+Widget buildTextField(bool isDark) {
   TextEditingController controller = TextEditingController();
   return Positioned(
     top: 170,
@@ -92,12 +92,8 @@ Widget buildTextField(isDark) {
       ),
       child: GooglePlaceAutoCompleteTextField(
         textEditingController: controller,
-        googleAPIKey: "Your_Api_Key",
+        googleAPIKey: "Your_APi_key",
         inputDecoration: InputDecoration(
-          // hintStyle: GoogleFonts.poppins(
-          //   fontSize: 16,
-          //   fontWeight: FontWeight.bold,
-          // ),
           hintStyle: TextStyle(
             color: isDark ? tCardBgClr : tDarkClr,
           ),
@@ -118,7 +114,12 @@ Widget buildTextField(isDark) {
         isLatLngRequired: true, // if you require coordinates from place detail
         getPlaceDetailWithLatLng: (Prediction prediction) {
           // This method will return latlng with place detail
-          print("Place details: ${prediction.lng.toString()}");
+          print("Place details:");
+          print("PlaceId:${prediction.placeId}");
+          print("Types:${prediction.types}");
+          print("Description: ${prediction.description}");
+          print("Latitude: ${prediction.lat}");
+          print("Longitude: ${prediction.lng}");
         }, // this callback is called when isLatLngRequired is true
         itmClick: (Prediction prediction) {
           controller.text = prediction.description!;

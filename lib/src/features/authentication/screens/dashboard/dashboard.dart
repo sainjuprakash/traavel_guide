@@ -11,6 +11,8 @@ import 'package:login_setup/src/features/authentication/screens/map_screen/map_s
 import 'package:login_setup/src/features/authentication/screens/profile/profile_screen.dart';
 import 'package:login_setup/src/repository/authentication_repository/authentication_repository.dart';
 
+import '../dummy_dash/dash.dart';
+
 class Dashboard extends StatelessWidget {
   const Dashboard({Key? key}) : super(key: key);
 
@@ -46,7 +48,14 @@ class Dashboard extends StatelessWidget {
                 icon: Icon(Icons.location_on_outlined, size: 30),
               ),
               IconButton(
-                onPressed: () => Get.to(UnderConstruction()),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Dash(category: 'restaurant'),
+                    ),
+                  );
+                },
                 icon: Icon(Icons.list, size: 30),
               ),
             ],
