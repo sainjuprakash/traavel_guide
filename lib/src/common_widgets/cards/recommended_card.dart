@@ -16,7 +16,7 @@ class RecommendedCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final txtTheme = Theme.of(context).textTheme;
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-
+    print(placeInfo.name);
     return InkWell(
       onTap: press,
       child: Material(
@@ -40,7 +40,7 @@ class RecommendedCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage(placeInfo.image))),
+                          image: NetworkImage(placeInfo.imageUrl))),
                 ),
                 SizedBox(
                   height: 20,
@@ -59,7 +59,7 @@ class RecommendedCard extends StatelessWidget {
                       color: tPrimaryClr,
                     ),
                     Text(
-                      placeInfo.location,
+                      placeInfo.address,
                       style: TextStyle(color: Colors.grey, fontSize: 15),
                     )
                   ],

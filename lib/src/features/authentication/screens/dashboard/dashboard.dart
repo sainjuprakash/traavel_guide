@@ -13,14 +13,66 @@ import 'package:login_setup/src/repository/authentication_repository/authenticat
 
 import '../dummy_dash/dash.dart';
 
-class Dashboard extends StatelessWidget {
-  const Dashboard({Key? key}) : super(key: key);
+class Dashboard extends StatefulWidget {
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  //const Dashboard({Key? key}) : super(key: key);
+  static List<PlaceInfo> places = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setponds();
+  }
+
+  void settemples() async {
+    List<PlaceInfo> temples = await PlacesService().getTemples();
+    setState(() {
+      places = [];
+      places = temples;
+    });
+  }
+
+  void setponds() async {
+    List<PlaceInfo> ponds = await PlacesService().getPonds();
+    setState(() {
+      places = [];
+      places = ponds;
+    });
+  }
+
+  void setchowks() async {
+    List<PlaceInfo> chowks = await PlacesService().getchowks();
+    setState(() {
+      places = [];
+      places = chowks;
+    });
+  }
+
+  void setmeseums() async {
+    List<PlaceInfo> meseums = await PlacesService().getmeseums();
+    setState(() {
+      places = [];
+      places = meseums;
+    });
+  }
+
+  void setstatues() async {
+    List<PlaceInfo> statues = await PlacesService().getstatues();
+    setState(() {
+      places = [];
+      places = statues;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final txtTheme = Theme.of(context).textTheme;
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-
+    print(places[0].name);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       bottomNavigationBar: SafeArea(
@@ -52,7 +104,7 @@ class Dashboard extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => Dash(category: 'restaurant'),
+                      builder: (context) => Dash(),
                     ),
                   );
                 },
@@ -171,24 +223,39 @@ class Dashboard extends StatelessWidget {
                       Row(
                         children: [
                           CategoryCard(
-                            press: () {},
+                            press: () {
+                              settemples();
+                            },
                             image: "assets/images/mountains.jpeg",
-                            title: "Mountains",
+                            title: "Temples",
                           ),
                           CategoryCard(
-                            press: () {},
+                            press: () {
+                              setponds();
+                            },
                             image: "assets/images/forests.jpeg",
-                            title: "Forests",
+                            title: "Ponds",
                           ),
                           CategoryCard(
-                            press: () {},
+                            press: () {
+                              setchowks();
+                            },
                             image: "assets/images/sea.webp",
-                            title: "Sea",
+                            title: "chowks",
                           ),
                           CategoryCard(
-                            press: () {},
+                            press: () {
+                              setmeseums();
+                            },
                             image: "assets/images/deserts.jpeg",
-                            title: "Deserts",
+                            title: "Mesuems",
+                          ),
+                          CategoryCard(
+                            press: () {
+                              setstatues();
+                            },
+                            image: "assets/images/deserts.jpeg",
+                            title: "Statues",
                           ),
                         ],
                       ),

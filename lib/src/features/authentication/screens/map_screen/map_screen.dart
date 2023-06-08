@@ -1,13 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+import 'package:http/http.dart' as http;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-//import 'package:flutter/services.dart' show rootBundle;
+
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 import 'package:login_setup/src/constants/colors.dart';
 import 'package:login_setup/src/features/authentication/controllers/profile_controller.dart';
 import 'package:login_setup/src/features/authentication/models/user_model.dart';
+
+import '../../../../constants/text_strings.dart';
+import '../../controllers/helper_copntroller.dart';
 
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
@@ -18,15 +25,80 @@ class MapView extends StatefulWidget {
 
 class _MapViewState extends State<MapView> {
   final controller = Get.put(ProfileController());
-  //String? _mapStyle;
-  // @override
-  // void initState() {
-  //   super.initState();
+  List<dynamic> data = [];
+  LatLng? currentLocation;
+  Marker? currentLocationMarker;
 
-  //   rootBundle.loadString('assets/images/map_style.txt').then((string) {
-  //     _mapStyle = string;
-  //   });
-  // }
+  Future<void> findCurrentLocation({bool focusCamera = true}) async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      Helper.errorSnackBar(title: tOhSnap, message: 'Location is disabled');
+      return;
+    }
+
+    // Request location permission
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.deniedForever) {
+      Helper.errorSnackBar(
+          title: tOhSnap,
+          message:
+              'Location permissions are permanently denied, we cannot request permissions.');
+
+      return;
+    }
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
+        Helper.errorSnackBar(
+            title: tOhSnap,
+            message:
+                'Location permissions are denied (actual value: $permission).');
+
+        return;
+      }
+    }
+
+    // Get the current position
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    // Print the latitude and longitude
+    print('Latitude: ${position.latitude}');
+    print('Longitude: ${position.longitude}');
+    if (focusCamera && currentLocation != null) {
+      myMapController?.animateCamera(
+        CameraUpdate.newLatLngZoom(currentLocation!, 14),
+      );
+    }
+    setState(() {
+      currentLocation = LatLng(position.latitude, position.longitude);
+      currentLocationMarker = Marker(
+        markerId: MarkerId('currentLocation'),
+        position: currentLocation!,
+        icon: BitmapDescriptor
+            .defaultMarker, // Customize the marker icon if needed
+      );
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    findCurrentLocation(focusCamera: false).then((_) {
+      if (currentLocation != null) {
+        myMapController?.animateCamera(
+          CameraUpdate.newLatLngZoom(currentLocation!, 14),
+        );
+      }
+    });
+  }
 
   final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(27.672845084463354, 85.42860344085487),
@@ -45,26 +117,50 @@ class _MapViewState extends State<MapView> {
           right: 0,
           bottom: 0,
           child: GoogleMap(
-              zoomControlsEnabled: false,
-              onMapCreated: (GoogleMapController controller) {
-                myMapController = controller;
-                //myMapController!.setMapStyle(_mapStyle);
-              },
-              initialCameraPosition: _kGooglePlex,
-              markers: {
+            zoomControlsEnabled: false,
+            onMapCreated: (GoogleMapController controller) {
+              myMapController = controller;
+            },
+            initialCameraPosition: _kGooglePlex,
+            markers: Set<Marker>.of([
+              if (currentLocation != null)
                 Marker(
-                  markerId: MarkerId('location'),
-                  position: LatLng(27.672845084463354, 85.42860344085487),
+                  markerId: MarkerId('currentLocation'),
+                  position: currentLocation!,
+                  icon: BitmapDescriptor
+                      .defaultMarker, // Customize the marker icon if needed
                 ),
-              }),
+            ]),
+          ),
         ),
         buildProfileTile(controller, isDark),
-        //placesAutoCompleteTextField(),
         buildTextField(isDark),
         buildCurrentLocationIcon(isDark),
         buildNotificationIcon(),
         buildBottomSheet(),
       ]),
+    );
+  }
+
+  Widget buildCurrentLocationIcon(bool isDark) {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 30, right: 8),
+        child: CircleAvatar(
+          radius: 20,
+          backgroundColor: isDark ? tPrimaryClr : Colors.green,
+          child: IconButton(
+            onPressed: () {
+              findCurrentLocation(focusCamera: true);
+            },
+            icon: Icon(
+              Icons.my_location,
+              color: tWhiteClr,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -92,7 +188,7 @@ Widget buildTextField(bool isDark) {
       ),
       child: GooglePlaceAutoCompleteTextField(
         textEditingController: controller,
-        googleAPIKey: "Your_APi_key",
+        googleAPIKey: "Your API KEY",
         inputDecoration: InputDecoration(
           hintStyle: TextStyle(
             color: isDark ? tCardBgClr : tDarkClr,
@@ -208,26 +304,6 @@ Widget buildProfileTile(controller, isDark) {
               return Center(child: CircularProgressIndicator());
             }
           }));
-}
-
-Widget buildCurrentLocationIcon(bool isDark) {
-  return Align(
-    alignment: Alignment.bottomRight,
-    child: Padding(
-      padding: const EdgeInsets.only(bottom: 30, right: 8),
-      child: CircleAvatar(
-        radius: 20,
-        backgroundColor: isDark ? tPrimaryClr : Colors.green,
-        child: IconButton(
-          onPressed: () {},
-          icon: Icon(
-            Icons.my_location,
-            color: tWhiteClr,
-          ),
-        ),
-      ),
-    ),
-  );
 }
 
 Widget buildNotificationIcon() {

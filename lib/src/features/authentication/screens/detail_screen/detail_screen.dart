@@ -17,7 +17,7 @@ class DetailScreen extends StatelessWidget {
         backgroundColor: tWhiteClr,
         body: Stack(
           children: [
-            Image.asset(placeInfo.image,
+            Image.network(placeInfo.imageUrl,
                 width: double.infinity,
                 fit: BoxFit.cover,
                 height: MediaQuery.of(context).size.height * 0.5),
@@ -115,7 +115,7 @@ class DetailScreen extends StatelessWidget {
                                 SizedBox(
                                   width: 12,
                                 ),
-                                Text(placeInfo.location,
+                                Text(placeInfo.address,
                                     style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 20,
@@ -126,7 +126,7 @@ class DetailScreen extends StatelessWidget {
                               height: 15,
                             ),
                             Text(
-                              "Trip Details",
+                              "Temple Details",
                               style: TextStyle(
                                   color: isDark ? tPrimaryClr : tSecondaryClr,
                                   fontSize: 23,
@@ -149,7 +149,7 @@ class DetailScreen extends StatelessWidget {
                             ),
                             Row(
                               children: [
-                                Text("Duration",
+                                Text("city",
                                     style: TextStyle(
                                       color:
                                           isDark ? tPrimaryClr : tSecondaryClr,
@@ -159,7 +159,7 @@ class DetailScreen extends StatelessWidget {
                                   width: 12,
                                 ),
                                 Expanded(
-                                  child: Text("${placeInfo.days} days",
+                                  child: Text("${placeInfo.city} city",
                                       style: TextStyle(
                                         color: isDark
                                             ? Colors.grey
@@ -175,7 +175,7 @@ class DetailScreen extends StatelessWidget {
                             ),
                             Row(
                               children: [
-                                Text("Distance",
+                                Text("Deity",
                                     style: TextStyle(
                                       color:
                                           isDark ? tPrimaryClr : tSecondaryClr,
@@ -185,15 +185,14 @@ class DetailScreen extends StatelessWidget {
                                   width: 12,
                                 ),
                                 Expanded(
-                                  child:
-                                      Text("${placeInfo.distance} kilometers",
-                                          style: TextStyle(
-                                            color: isDark
-                                                ? Colors.grey
-                                                : tSecondaryClr,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
-                                          )),
+                                  child: Text("${placeInfo.city} god",
+                                      style: TextStyle(
+                                        color: isDark
+                                            ? Colors.grey
+                                            : tSecondaryClr,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      )),
                                 ),
                               ],
                             ),
