@@ -17,7 +17,7 @@ class Helper extends GetxController {
         margin: const EdgeInsets.all(tDefaultSize - 10),
         icon: const Icon(
           LineAwesomeIcons.check_circle,
-          color: tWhiteClr,
+          color: Colors.white,
         ));
   }
 
@@ -32,7 +32,7 @@ class Helper extends GetxController {
         margin: const EdgeInsets.all(tDefaultSize - 10),
         icon: const Icon(
           LineAwesomeIcons.check_circle,
-          color: tWhiteClr,
+          color: Colors.white,
         ));
   }
 }

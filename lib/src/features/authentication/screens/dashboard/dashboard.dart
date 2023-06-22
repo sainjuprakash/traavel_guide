@@ -11,6 +11,7 @@ import 'package:login_setup/src/features/authentication/screens/map_screen/map_s
 import 'package:login_setup/src/features/authentication/screens/profile/profile_screen.dart';
 import 'package:login_setup/src/repository/authentication_repository/authentication_repository.dart';
 
+import '../../../../common_widgets/cards/recommened/recommended_for_event.dart';
 import '../dummy_dash/dash.dart';
 
 class Dashboard extends StatefulWidget {
@@ -21,11 +22,15 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   //const Dashboard({Key? key}) : super(key: key);
   static List<PlaceInfo> places = [];
+
+  static List<PlaceInfo> allEvents = [];
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    setponds();
+    settemples();
+    setAllEvents();
   }
 
   void settemples() async {
@@ -68,11 +73,27 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
+  void setAllEvents() async {
+    List<PlaceInfo> events = await PlacesService().getAllEvents();
+    setState(() {
+      allEvents = [];
+      allEvents = events;
+    });
+  }
+
+  void setUpcomingEvents() async {
+    List<PlaceInfo> upcomingEvents = await PlacesService().getUpcomingEvents();
+    setState(() {
+      allEvents = [];
+      allEvents = upcomingEvents;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final txtTheme = Theme.of(context).textTheme;
     var isDark = MediaQuery.of(context).platformBrightness == Brightness.dark;
-    print(places[0].name);
+    //print(places[0].name);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       bottomNavigationBar: SafeArea(
@@ -226,36 +247,103 @@ class _DashboardState extends State<Dashboard> {
                             press: () {
                               settemples();
                             },
-                            image: "assets/images/mountains.jpeg",
+                            image: "assets/images/temple.jpg",
                             title: "Temples",
                           ),
                           CategoryCard(
                             press: () {
                               setponds();
                             },
-                            image: "assets/images/forests.jpeg",
+                            image: "assets/images/pond.jpg",
                             title: "Ponds",
                           ),
                           CategoryCard(
                             press: () {
                               setchowks();
                             },
-                            image: "assets/images/sea.webp",
+                            image: "assets/images/chwo.webp",
                             title: "chowks",
                           ),
                           CategoryCard(
                             press: () {
                               setmeseums();
                             },
-                            image: "assets/images/deserts.jpeg",
+                            image: "assets/images/meu.webp",
                             title: "Mesuems",
                           ),
                           CategoryCard(
                             press: () {
                               setstatues();
                             },
-                            image: "assets/images/deserts.jpeg",
+                            image: "assets/images/stat.jpg",
                             title: "Statues",
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                    height: 305,
+                    child: ListView.builder(
+                        itemCount: places.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 5, right: 15),
+                            child: Row(
+                              children: [
+                                RecommendedCard(
+                                  placeInfo: places[index],
+                                  press: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => DetailScreen(
+                                                  placeInfo: places[index],
+                                                )));
+                                  },
+                                )
+                              ],
+                            ),
+                          );
+                        })),
+
+/****************Events****************/
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "Events",
+                      style: txtTheme.headlineMedium,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  height: 60,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      Row(
+                        children: [
+                          CategoryCard(
+                            press: () {
+                              setAllEvents();
+                            },
+                            image: "assets/images/temple.jpg",
+                            title: "All Events",
+                          ),
+                          CategoryCard(
+                            press: () {
+                              setUpcomingEvents();
+                            },
+                            image: "assets/images/pond.jpg",
+                            title: "Upcoming Events",
                           ),
                         ],
                       ),
@@ -272,14 +360,14 @@ class _DashboardState extends State<Dashboard> {
                             padding: const EdgeInsets.only(left: 5, right: 15),
                             child: Row(
                               children: [
-                                RecommendedCard(
-                                  placeInfo: places[index],
+                                RecommendedForEvent(
+                                  placeInfo: allEvents[index],
                                   press: () {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => DetailScreen(
-                                                placeInfo: places[index])));
+                                                placeInfo: allEvents[index])));
                                   },
                                 )
                               ],

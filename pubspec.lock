@@ -137,6 +137,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.6"
+  fab_circular_menu:
+    dependency: "direct main"
+    description:
+      name: fab_circular_menu
+      sha256: "8fac671b1a37b21bf20ae60bd8cc76eff314b8c7618134e5d549f84d91bd3d46"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   fake_async:
     dependency: transitive
     description:
@@ -262,6 +270,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  flutter_riverpod:
+    dependency: "direct main"
+    description:
+      name: flutter_riverpod
+      sha256: b83ac5827baadefd331ea1d85110f34645827ea234ccabf53a655f41901a9bf4
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.6"
   flutter_secure_storage:
     dependency: transitive
     description:
@@ -816,6 +832,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
+  riverpod:
+    dependency: transitive
+    description:
+      name: riverpod
+      sha256: "80e48bebc83010d5e67a11c9514af6b44bbac1ec77b4333c8ea65dbc79e2d8ef"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.6"
   rxdart:
     dependency: transitive
     description:
@@ -853,6 +877,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.0"
+  state_notifier:
+    dependency: transitive
+    description:
+      name: state_notifier
+      sha256: "8fe42610f179b843b12371e40db58c9444f8757f8b69d181c97e50787caed289"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.2+1"
   stream_channel:
     dependency: transitive
     description:

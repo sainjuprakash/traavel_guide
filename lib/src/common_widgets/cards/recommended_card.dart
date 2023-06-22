@@ -7,10 +7,10 @@ class RecommendedCard extends StatelessWidget {
   final PlaceInfo placeInfo;
   final VoidCallback press;
   const RecommendedCard({
-    super.key,
+    Key? key, // Corrected argument name
     required this.placeInfo,
     required this.press,
-  });
+  }) : super(key: key); // Added 'super(key: key)' argument
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +23,8 @@ class RecommendedCard extends StatelessWidget {
         elevation: 5,
         borderRadius: BorderRadius.circular(20),
         child: Container(
-          height: 250,
-          width: 200,
+          height: 278,
+          width: 220,
           decoration: BoxDecoration(
               color: isDark ? tSecondaryClr : tCardBgClr,
               borderRadius: BorderRadius.circular(20)),

@@ -58,6 +58,8 @@ dependencies:
   flutter_polyline_points: ^1.0.0
   http: ^0.13.1
   convert: ^3.1.1
+  flutter_riverpod: ^2.3.6
+  fab_circular_menu: ^1.0.2
 
 dev_dependencies:
   flutter_test:
@@ -91,8 +93,9 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/mapicons/
     - assets/icons/
-    - assets/animation/
+    - assets/animation/map_animation.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -6,6 +6,7 @@ import 'package:login_setup/src/features/authentication/models/user_model.dart';
 
 import '../../../repository/User_repository/user_repository.dart';
 import '../../../repository/authentication_repository/authentication_repository.dart';
+import '../screens/dashboard/dashboard.dart';
 
 class SignUpController extends GetxController {
   static SignUpController get instance => Get.find();
@@ -23,13 +24,21 @@ class SignUpController extends GetxController {
   // get phoneAuthentication => null;
 
 //Call this Function from Design & it will do the rest
-  void registerUser(String? email, String? password) {
-    String? error = AuthenticationRepository.instance
+  void registerUser(String? email, String? password) async {
+    String? error = await AuthenticationRepository.instance
         .createUserWithEmailAndPAssword(email!, password!) as String?;
     if (error != null) {
       Get.showSnackbar(GetSnackBar(
         message: error.toString(),
       ));
+    } else {
+      UserModel user = UserModel(
+        email: email,
+        password: password,
+        fullname: fullName.text.trim(),
+        phoneNo: phoneNo.text.trim(),
+      );
+      await userRepo.createUser(user);
     }
   }
 
@@ -44,8 +53,8 @@ class SignUpController extends GetxController {
   }
 
   Future<void> createUser(UserModel user) async {
-    phoneAuthentication(user.phoneNo!);
-    await userRepo.createUser(user);
+    //phoneAuthentication(user.phoneNo!);
+    // await userRepo.createUser(user);
 
     registerUser(user.email!, user.password!);
   }
