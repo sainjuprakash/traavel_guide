@@ -39,7 +39,7 @@ dependencies:
 
   flutter_otp_text_field: ^1.1.1
   firebase_core: ^2.10.0
-
+  crc: ^0.0.2
   get: ^4.6.5
   firebase_auth: ^4.5.0
   cloud_firestore: ^4.6.0
@@ -95,7 +95,6 @@ flutter:
     - assets/images/
     - assets/mapicons/
     - assets/icons/
-    - assets/animation/map_animation.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

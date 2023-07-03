@@ -26,7 +26,7 @@ class CategoryCard extends StatelessWidget {
           elevation: 5,
           borderRadius: BorderRadius.circular(100),
           child: Container(
-            height: 55,
+            height: 60,
             decoration: BoxDecoration(
               color: !isDark ? tWhiteClr : tSecondaryClr,
               borderRadius: BorderRadius.circular(100),

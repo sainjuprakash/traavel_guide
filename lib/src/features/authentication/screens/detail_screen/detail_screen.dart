@@ -18,8 +18,8 @@ class _DetailScreenState extends State<DetailScreen> {
   List<bool> starStatus = [false, false, false, false, false];
   TextEditingController _commentController = TextEditingController();
 
-  final String apiUrl1 = "http://192.168.1.67/api/insert_TempleRatings.php";
-  final String Url = "http://192.168.1.67/api/insert_fav.php";
+  final String apiUrl1 = "http://192.168.1.64/api/insert_TempleRatings.php";
+  final String Url = "http://192.168.1.64/api/insert_fav.php";
 
   late int templeid;
   late String Username;
@@ -34,7 +34,7 @@ class _DetailScreenState extends State<DetailScreen> {
     // Perform the necessary check to determine if the place is in favorites
     final String uiid = currentuser;
     final response = await http.get(Uri.parse(
-        "http://192.168.1.67/api/insert_fav.php?uid=$uiid&templeid=$templeid"));
+        "http://192.168.1.64/api/insert_fav.php?uid=$uiid&templeid=$templeid"));
 
     if (response.statusCode == 200) {
       // Check if the response indicates that the place is in favorites
@@ -53,7 +53,7 @@ class _DetailScreenState extends State<DetailScreen> {
     print(comment);
     final String uiid = currentuser;
     final response = await http.post(
-        Uri.parse("http://192.168.1.67/api/insert_rating.php?title=$title"),
+        Uri.parse("http://192.168.1.64/api/insert_rating.php?title=$title"),
         body: {
           'rating': rating.toString(),
           'templeid': templeid.toString(),
@@ -74,7 +74,7 @@ class _DetailScreenState extends State<DetailScreen> {
     print('this');
     final String uiid = currentuser;
     final response = await http.post(
-        Uri.parse("http://192.168.1.67/api/insert_fav.php?title=$title"),
+        Uri.parse("http://192.168.1.64/api/insert_fav.php?title=$title"),
         body: {
           'uid': uiid.toString(),
           'templeid': templeid.toString(),

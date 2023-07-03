@@ -29,7 +29,7 @@ class AuthenticationRepository extends GetxController {
   _setInitialScreen(User? user) {
     user == null
         ? Get.offAll(() => const WelcomeScreen())
-        : Get.offAll(() =>  Dashboard());
+        : Get.offAll(() => Dashboard());
   }
 
   void phoneAuthentication(String phoneNo) async {

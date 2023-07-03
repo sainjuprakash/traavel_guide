@@ -40,7 +40,7 @@ class UserRepository extends GetxController {
   }
 
   Future<void> _saveUserDataLocally(UserModel user, String userId) async {
-    final url = 'http://192.168.1.67/api/insert-into-db.php';
+    final url = 'http://192.168.1.64/api/insert-into-db.php';
 
     try {
       final response = await http.post(

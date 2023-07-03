@@ -5,7 +5,6 @@ import 'dart:convert' as convert;
 
 import '../../models/auto_complete_results.dart';
 
-
 class MapServices {
   final String key = 'AIzaSyBfRbRmSxQQT_DrfuMKyjn5hViVRUSupSA';
   final String types = 'geocode';

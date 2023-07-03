@@ -30,46 +30,46 @@ class MyApp extends StatelessWidget {
       darkTheme: TAppTheme.DarkTheme,
       themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
-      home: const Splashscreen(),
+      home: const WelcomeScreen(),
     );
   }
 }
 
-class Splashscreen extends StatefulWidget {
-  const Splashscreen({super.key});
+// class Splashscreen extends StatefulWidget {
+//   const Splashscreen({super.key});
 
-  @override
-  State<Splashscreen> createState() => _SplashscreenState();
-}
+//   @override
+//   State<Splashscreen> createState() => _SplashscreenState();
+// }
 
-class _SplashscreenState extends State<Splashscreen> {
-  bool _isDisposed = false;
-  void dispose() {
-    _isDisposed = true;
-    super.dispose();
-  }
+// class _SplashscreenState extends State<Splashscreen> {
+//   bool _isDisposed = false;
+//   void dispose() {
+//     _isDisposed = true;
+//     super.dispose();
+//   }
 
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration(seconds: 5)).then((value) {
-      if (!_isDisposed) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => WelcomeScreen()),
-        );
-      }
-    });
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     Future.delayed(Duration(seconds: 8)).then((value) {
+//       if (!_isDisposed) {
+//         Navigator.of(context).pushReplacement(
+//           MaterialPageRoute(builder: (context) => WelcomeScreen()),
+//         );
+//       }
+//     });
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Center(
-      child: Container(
-        height: 200,
-        width: 200,
-        child: Lottie.asset('assets/animation/map_animation.json'),
-      ),
-    ));
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//         body: Center(
+//       child: Container(
+//         height: 200,
+//         width: 200,
+//         child: Lottie.asset('assets/images/map_animation.json'),
+//       ),
+//     ));
+//   }
+// }
