@@ -1,11 +1,9 @@
 import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login_setup/src/constants/constant.dart';
 import 'package:login_setup/src/features/authentication/screens/dummy_dash/dash.dart';
 import 'package:login_setup/src/features/authentication/screens/map_screen/map_screen.dart';
-
 import '../../../../common_widgets/cards/recommended_card.dart';
 import '../../../../constants/colors.dart';
 import '../../models/place_modal.dart';

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:login_setup/src/common_widgets/cards/category_card.dart';
 import 'package:login_setup/src/common_widgets/cards/recommended_card.dart';
-
 import 'package:login_setup/src/common_widgets/cards/recommened/recommended_for_event.dart';
 import 'package:login_setup/src/constants/colors.dart';
 import 'package:login_setup/src/features/authentication/models/place_modal.dart';
@@ -12,13 +11,11 @@ import 'package:login_setup/src/features/authentication/screens/Scanner/scanner.
 import 'package:login_setup/src/features/authentication/screens/dashboard/widgets/NavButton.dart';
 import 'package:login_setup/src/features/authentication/screens/detail_screen/detail_screen.dart';
 import 'package:login_setup/src/features/authentication/screens/favourite/favorite.dart';
-
 import 'package:login_setup/src/features/authentication/screens/profile/profile_screen.dart';
 import 'package:login_setup/src/repository/authentication_repository/authentication_repository.dart';
 import 'package:http/io_client.dart';
 import 'dart:io';
 import '../detail_screen/details_for_event.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import '../ring_screen/ring_data.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -244,10 +241,6 @@ class _DashboardState extends State<Dashboard> {
                   onPress: () => () => Get.to(Dashboard()),
                   icon: Icons.home,
                   color: Colors.redAccent),
-              NavButton(
-                onPress: () => Get.to(Scanner()),
-                icon: Icons.list,
-              ),
               NavButton(onPress: () => Get.to(RingsPage()), icon: Icons.list),
             ],
           ),
@@ -261,17 +254,10 @@ class _DashboardState extends State<Dashboard> {
               /*******APP_BAR********/
               Row(
                 children: [
-                  InkWell(
-                    onTap: () {
-                      AuthenticationRepository.instance.logout();
-                      GoogleSignIn().signOut();
-                      Navigator.pop(context);
-                    },
-                    child: CircleAvatar(
-                      radius: 27,
-                      backgroundImage: AssetImage("assets/images/user.png"),
-                      backgroundColor: isDark ? tSecondaryClr : tAccentClr,
-                    ),
+                  CircleAvatar(
+                    radius: 27,
+                    backgroundImage: AssetImage("assets/images/user.png"),
+                    backgroundColor: isDark ? tSecondaryClr : tAccentClr,
                   ),
                   SizedBox(
                     width: 15,
@@ -288,8 +274,18 @@ class _DashboardState extends State<Dashboard> {
                             style: TextStyle(
                                 color: isDark ? tWhiteClr : tDarkClr,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 18))
-                      ]))
+                                fontSize: 18)),
+                      ])),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 100),
+                    child: IconButton(
+                      onPressed: () {
+                        Get.to(() => Scanner());
+                      },
+                      icon: Icon(Icons.qr_code),
+                      iconSize: 38,
+                    ),
+                  )
                 ],
               ),
 
@@ -319,7 +315,7 @@ class _DashboardState extends State<Dashboard> {
                 ],
               ),
               SizedBox(
-                height: 20,
+                height: 8,
               ),
               Container(
                 height: 60,
@@ -368,9 +364,9 @@ class _DashboardState extends State<Dashboard> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
+              // SizedBox(
+              //   height: 30,
+              // ),
               Container(
                 height: 308,
                 child: SingleChildScrollView(

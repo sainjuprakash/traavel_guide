@@ -7,6 +7,9 @@ import 'package:login_setup/src/constants/sizes.dart';
 import 'package:login_setup/src/constants/text_strings.dart';
 import 'package:login_setup/src/features/authentication/controllers/profile_controller.dart';
 import 'package:login_setup/src/features/authentication/models/user_model.dart';
+import 'package:login_setup/src/features/authentication/screens/Scanner/scanner.dart';
+import 'package:login_setup/src/features/authentication/screens/check-in/about_us.dart';
+import 'package:login_setup/src/features/authentication/screens/check-in/user_checkin.dart';
 import 'package:login_setup/src/features/authentication/screens/dashboard/dashboard.dart';
 import 'package:login_setup/src/features/authentication/screens/profile/update_profile_screen.dart';
 import 'package:login_setup/src/features/authentication/screens/profile/widget/profile_menu_widget.dart';
@@ -130,21 +133,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         onPress: () {},
                       ),
                       ProfileMenuWidget(
-                        title: 'Billing Details',
+                        title: 'Scan me',
                         icon: LineAwesomeIcons.wallet,
-                        onPress: () {},
+                        onPress: () => Get.to(()=> Scanner()),
                       ),
                       ProfileMenuWidget(
-                        title: 'User Management',
+                        title: 'User\'s Check-in ',
                         icon: LineAwesomeIcons.user_check,
-                        onPress: () {},
+                        onPress: ()=> Get.to(()=>CheckIn()),
                       ),
                       Divider(color: Colors.grey),
                       SizedBox(height: 10),
+
                       ProfileMenuWidget(
-                        title: 'Information',
+                        title: 'About Us',
                         icon: LineAwesomeIcons.info,
-                        onPress: () {},
+                        onPress: () {
+                          Get.to(()=>About());
+                        },
                       ),
                       ProfileMenuWidget(
                         title: 'Logout',
