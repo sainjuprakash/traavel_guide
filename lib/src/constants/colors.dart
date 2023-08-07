@@ -10,3 +10,4 @@ const tDarkClr = Color(0xFF000000); // Dark color
 const tOnBoardingPage1Clr = Colors.white; // Onboarding page 1 color
 const tOnBoardingPage2Clr = Color(0xfffddcdf); // Onboarding page 2 color
 const tOnBoardingPage3Clr = Color(0xffffdcbd); // Onboarding page 3 color
+const tRouteColor = Color(0xFF7861FF);

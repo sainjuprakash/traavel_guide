@@ -1,25 +1,19 @@
-import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:login_setup/src/constants/constant.dart';
-import 'package:login_setup/src/features/authentication/screens/dummy_dash/dash.dart';
-import 'package:login_setup/src/features/authentication/screens/map_screen/map_screen.dart';
 
-import '../../../../common_widgets/cards/recommended_card.dart';
 import '../../../../constants/colors.dart';
 import '../../models/place_modal.dart';
 import 'package:http/http.dart' as http;
 
-class DetailScreen extends StatefulWidget {
+class DetailForEvent extends StatefulWidget {
   final PlaceInfo placeInfo;
-  const DetailScreen({Key? key, required this.placeInfo}) : super(key: key);
+  const DetailForEvent({Key? key, required this.placeInfo}) : super(key: key);
 
   @override
-  State<DetailScreen> createState() => _DetailScreenState();
+  State<DetailForEvent> createState() => _DetailForEventState();
 }
 
-class _DetailScreenState extends State<DetailScreen> {
+class _DetailForEventState extends State<DetailForEvent> {
   List<bool> starStatus = [false, false, false, false, false];
   TextEditingController _commentController = TextEditingController();
 
@@ -36,106 +30,17 @@ class _DetailScreenState extends State<DetailScreen> {
   bool isFavorite = false;
   List<PlaceInfo> recommendations = [];
 
-  void fetchRecommendations() async {
-    // if (title == 'temple') {
-    var url = 'http://192.168.1.65:5000/predict';
-    var body = jsonEncode({'user_id': currentuser});
-
-    var response = await http.post(
-      Uri.parse(url),
-      headers: {'Content-Type': 'application/json'},
-      body: body,
-    );
-
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      print('Recommendations data: $data');
-
-      List<int> recommendationIds = List<int>.from(data);
-      print('Number of recommendations: ${recommendationIds.length}');
-
-      List<PlaceInfo> recommendedTemples = [];
-
-      // Initialize the PlacesService class
-      PlacesService placesService = PlacesService();
-
-      // Fetch all temples from the API
-      List<PlaceInfo> temples = await placesService.getTemples();
-
-      for (int id in recommendationIds) {
-        PlaceInfo temple =
-            temples.firstWhere((temples) => temples.id == (id + 1));
-        if (temple != null) {
-          recommendedTemples.add(temple);
-        }
-      }
-
-      setState(() {
-        recommendations = recommendedTemples;
-      });
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-    }
-    //  // }
-    //    else if (title == 'pond') {
-    //     var url = 'http://192.168.1.65:5000/predict';
-    //     var body = jsonEncode({'user_id': currentuser});
-
-    //     var response = await http.post(
-    //       Uri.parse(url),
-    //       headers: {'Content-Type': 'application/json'},
-    //       body: body,
-    //     );
-
-    //     if (response.statusCode == 200) {
-    //       var data = jsonDecode(response.body);
-    //       print('Recommendations data: $data');
-
-    //       List<int> recommendationIds = List<int>.from(data);
-    //       print('Number of recommendations: ${recommendationIds.length}');
-
-    //       List<PlaceInfo> recommendedPonds = [];
-
-    //       // Initialize the PlacesService class
-    //       PlacesService placesService = PlacesService();
-
-    //       // Fetch all temples from the API
-    //       List<PlaceInfo> temples = await placesService.getPonds();
-
-    //       for (int id in recommendationIds) {
-    //         PlaceInfo pond = temples.firstWhere((ponds) => ponds.id == (id + 1));
-    //         if (pond != null) {
-    //           recommendedPonds.add(pond);
-    //         }
-    //       }
-
-    //       setState(() {
-    //         recommendations = recommendedPonds;
-    //       });
-    //     } else {
-    //       print('Request failed with status: ${response.statusCode}.');
-    //     }
-    //   }
-  }
-
   Future<void> checkFavoriteStatus() async {
     // Perform the necessary check to determine if the place is in favorites
-    final String uid = currentuser;
-    // final response = await http.get(Uri.parse(
-    //     "http://192.168.1.65/api/show_favTemple.php?uid=$uid&templeid=$templeid"));
-
-    final response = await http
-        .post(Uri.parse("http://192.168.1.65/api/show_favTemple.php"), body: {
-      'templeid': templeid.toString(),
-      'uid': uid.toString(),
-    });
+    final String uiid = currentuser;
+    final response = await http.get(Uri.parse(
+        "http://192.168.1.65/api/insert_fav.php?uid=$uiid&templeid=$templeid"));
 
     if (response.statusCode == 200) {
       // Check if the response indicates that the place is in favorites
       final bool isFavorite = response.body == '1';
       setState(() {
         this.isFavorite = isFavorite;
-        print('yes');
       });
     } else {
       // Failed to retrieve favorite status
@@ -187,22 +92,15 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   void _removeFavourite() async {
-    final String uid = currentuser;
-
-    final response = await http.post(
-      Uri.parse("http://192.168.1.65/api/remove_fav.php"),
-      body: {
-        'templeid': templeid.toString(),
-        'uid': uid,
-      },
-    );
-
+    final String uiid = currentuser;
+    final response = await http
+        .delete(Uri.parse("$Url?uid=$uiid&templeid=$templeid&title=$title"));
     if (response.statusCode == 200) {
       // Successful removal
       setState(() {
         isFavorite = false; // Update the favorite status after removal
       });
-      print('fav temple removed successfully!');
+      print('favtemple removed successfully!');
     } else {
       // Failed removal
       print('Failed to remove Favtemple.${response.statusCode}');
@@ -216,7 +114,6 @@ class _DetailScreenState extends State<DetailScreen> {
     currentuser = FirebaseAuth.instance.currentUser!.uid;
     title = widget.placeInfo.title!;
     checkFavoriteStatus();
-    fetchRecommendations();
   }
 
   @override
@@ -356,57 +253,8 @@ class _DetailScreenState extends State<DetailScreen> {
                             SizedBox(
                               height: 15,
                             ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Dash(
-                                        placeInfo: widget.placeInfo,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors
-                                      .indigo, // Set the button's background color
-                                  onPrimary: Colors
-                                      .white, // Set the text and icon color
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 12,
-                                      horizontal:
-                                          16), // Adjust the button's padding
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        20), // Apply rounded corners
-                                    side: BorderSide.none, // Remove the border
-                                  ),
-                                  elevation:
-                                      8, // Add a shadow with higher elevation
-                                ),
-                                icon: Icon(
-                                  Icons.explore, // Set the icon
-                                  size: 24, // Adjust the icon size
-                                ),
-                                label: Text(
-                                  'Explore', // Set the button text
-                                  style: TextStyle(
-                                    fontSize: 18, // Adjust the text size
-                                    fontWeight: FontWeight
-                                        .bold, // Apply bold font weight
-                                    letterSpacing:
-                                        1.0, // Add spacing between letters
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
                             Text(
-                              "Temple Details",
+                              "Event Details",
                               style: TextStyle(
                                   color: isDark ? tPrimaryClr : tSecondaryClr,
                                   fontSize: 23,
@@ -439,7 +287,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                   width: 12,
                                 ),
                                 Expanded(
-                                  child: Text("${widget.placeInfo.city} city",
+                                  child: Text("Bhaktapur city",
                                       style: TextStyle(
                                         color: isDark
                                             ? Colors.grey
@@ -493,48 +341,6 @@ class _DetailScreenState extends State<DetailScreen> {
                             SizedBox(
                               height: 20,
                             ),
-                            Row(
-                              children: [
-                                Text(
-                                  "Recommendation",
-                                  style: txtTheme.headlineMedium,
-                                ),
-                              ],
-                            ),
-                            Container(
-                              height: 300,
-                              child: ListView.builder(
-                                itemCount: recommendations.length,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 5, right: 15),
-                                    child: Expanded(
-                                      child: Row(
-                                        children: [
-                                          RecommendedCard(
-                                            placeInfo: recommendations[index],
-                                            press: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      DetailScreen(
-                                                    placeInfo:
-                                                        recommendations[index],
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            )
                           ],
                         ),
                       ),

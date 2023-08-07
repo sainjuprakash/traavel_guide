@@ -1,11 +1,8 @@
-class Constants {
-  static String appId = " ";
-  static String apiKey = " ";
-  static String messagingSenderId = " ";
-  static String projectId = " ";
-}
+import 'package:flutter/material.dart';
 
+const String apiKey = " AIzaSyCxWUj8p1mc6ctC6BcPHAb6sPYpichInyU";
 //Insert Ratings
+
 final String insert_temple_rating_uri =
     "http://192.168.1.65/api/insert_TempleRatings.php";
 final String insert_pond_rating_uri =

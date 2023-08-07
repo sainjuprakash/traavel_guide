@@ -42,13 +42,13 @@ class RecommendedForEvent extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: NetworkImage(placeInfo.imageUrl),
+                      image: NetworkImage(placeInfo.imageUrl!),
                     ),
                   ),
                 ),
                 SizedBox(height: 20),
                 Text(
-                  placeInfo.name,
+                  placeInfo.name!,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 SizedBox(height: 8.0),
@@ -59,7 +59,7 @@ class RecommendedForEvent extends StatelessWidget {
                       color: tPrimaryClr,
                     ),
                     Text(
-                      placeInfo.address,
+                      'bhaktapur',
                       style: TextStyle(color: Colors.grey, fontSize: 15),
                     ),
                   ],

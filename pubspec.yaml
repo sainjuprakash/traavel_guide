@@ -36,11 +36,11 @@ dependencies:
   cupertino_icons: ^1.0.2
   line_awesome_flutter: ^2.0.0
   google_fonts: ^4.0.4
-
   flutter_otp_text_field: ^1.1.1
   firebase_core: ^2.10.0
   crc: ^0.0.2
   get: ^4.6.5
+  location: ^4.4.0
   firebase_auth: ^4.5.0
   cloud_firestore: ^4.6.0
   curved_navigation_bar: ^1.0.3
@@ -60,6 +60,13 @@ dependencies:
   convert: ^3.1.1
   flutter_riverpod: ^2.3.6
   fab_circular_menu: ^1.0.2
+  chewie: ^1.7.0
+  video_player: ^2.7.0
+  simple_animations: ^5.0.2
+  barcode_scanner: ^3.6.1
+  qr_code_scanner: ^1.0.1
+  url_launcher: ^6.1.12
+  flutter_barcode_scanner: ^2.0.0
 
 dev_dependencies:
   flutter_test:

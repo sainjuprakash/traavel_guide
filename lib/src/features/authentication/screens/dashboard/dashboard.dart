@@ -4,16 +4,21 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:login_setup/src/common_widgets/cards/category_card.dart';
 import 'package:login_setup/src/common_widgets/cards/recommended_card.dart';
-import 'package:login_setup/src/common_widgets/animation/under_construction/under_construction.dart';
+
 import 'package:login_setup/src/common_widgets/cards/recommened/recommended_for_event.dart';
 import 'package:login_setup/src/constants/colors.dart';
 import 'package:login_setup/src/features/authentication/models/place_modal.dart';
+import 'package:login_setup/src/features/authentication/screens/Scanner/scanner.dart';
+import 'package:login_setup/src/features/authentication/screens/dashboard/widgets/NavButton.dart';
 import 'package:login_setup/src/features/authentication/screens/detail_screen/detail_screen.dart';
-import 'package:login_setup/src/features/authentication/screens/map_screen/map_screen.dart';
+import 'package:login_setup/src/features/authentication/screens/favourite/favorite.dart';
+
 import 'package:login_setup/src/features/authentication/screens/profile/profile_screen.dart';
 import 'package:login_setup/src/repository/authentication_repository/authentication_repository.dart';
 import 'package:http/io_client.dart';
 import 'dart:io';
+import '../detail_screen/details_for_event.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import '../ring_screen/ring_data.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -35,6 +40,7 @@ class _DashboardState extends State<Dashboard> {
   static List<PlaceInfo> allEvents = [];
   late String currentuser;
   String searchText = '';
+  List<PlaceInfo> recommendedRestaurants = [];
 
   @override
   void initState() {
@@ -43,90 +49,63 @@ class _DashboardState extends State<Dashboard> {
     settemples();
     setAllEvents();
     currentuser = FirebaseAuth.instance.currentUser!.uid;
-    fetchRecommendations();
+    // fetchRecommendations();
+    // fetchRecommendedRestaurants();
     //title = widget.placeInfo.title;
   }
 
-  void fetchRecommendations() async {
-    // if (title == 'temple') {
-    var url = 'http://192.168.1.64:5000/predict';
-    var body = jsonEncode({'user_id': currentuser});
+  void fetchRecommendedRestaurants() async {
+    try {
+      List<PlaceInfo> restaurants = await getRestaurantsInBhaktapur();
+      setState(() {
+        recommendedRestaurants = restaurants;
+      });
+    } catch (e) {
+      print('Error fetching recommended restaurants: $e');
+    }
+  }
 
-    var response = await http.post(
-      Uri.parse(url),
-      headers: {'Content-Type': 'application/json'},
-      body: body,
-    );
+  Future<List<PlaceInfo>> getRestaurantsInBhaktapur() async {
+    final apiKey = "AIzaSyCxWUj8p1mc6ctC6BcPHAb6sPYpichInyU";
+    double latitude = 27.6726; // Replace with the user's latitude
+    double longitude = 85.4285; // Replace with the user's longitude
+    final radius = 5000; // Radius in meters (adjust as needed)
+    final type = "restaurant"; // Type of place (restaurant in this case)
+
+    var response = await http.get(Uri.parse(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=$radius&type=$type&key=$apiKey'));
 
     if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      print('Recommendations data: $data');
-
-      List<int> recommendationIds = List<int>.from(data);
-      print('Number of recommendations: ${recommendationIds.length}');
-
-      List<PlaceInfo> recommendedTemples = [];
-
-      // Initialize the PlacesService class
-      PlacesService placesService = PlacesService();
-
-      // Fetch all temples from the API
-      List<PlaceInfo> temples = await placesService.getTemples();
-
-      for (int id in recommendationIds) {
-        PlaceInfo temple =
-            temples.firstWhere((temples) => temples.id == (id + 1));
-        if (temple != null) {
-          recommendedTemples.add(temple);
-        }
-      }
-
-      setState(() {
-        recommendations = recommendedTemples;
-      });
+      List<PlaceInfo> restaurants = parseRestaurantData(response.body);
+      return restaurants;
     } else {
-      print('Request failed with status: ${response.statusCode}.');
+      throw Exception('Failed to fetch restaurants from the API.');
     }
-    //  // }
-    //    else if (title == 'pond') {
-    //     var url = 'http://192.168.1.64:5000/predict';
-    //     var body = jsonEncode({'user_id': currentuser});
+  }
 
-    //     var response = await http.post(
-    //       Uri.parse(url),
-    //       headers: {'Content-Type': 'application/json'},
-    //       body: body,
-    //     );
+  List<PlaceInfo> parseRestaurantData(String responseBody) {
+    List<dynamic> data = jsonDecode(responseBody);
+    List<PlaceInfo> restaurants = [];
 
-    //     if (response.statusCode == 200) {
-    //       var data = jsonDecode(response.body);
-    //       print('Recommendations data: $data');
+    for (var item in data) {
+      PlaceInfo restaurant = PlaceInfo(
+        id: item['id'],
+        name: item['name'],
+        address: item['vicinity'],
+        city: '', // Add city field if available in the API response
+        imageUrl: '', // Set the imageUrl with the constructed URL
+        desc: '', // Add desc field if available in the API response
+        title: '', // Add title field if available in the API response
+        latitude: item['geometry']['location']['lat'].toString(),
+        longitude: item['geometry']['location']['lng'].toString(),
+      );
 
-    //       List<int> recommendationIds = List<int>.from(data);
-    //       print('Number of recommendations: ${recommendationIds.length}');
+      print(restaurant.name);
 
-    //       List<PlaceInfo> recommendedPonds = [];
+      restaurants.add(restaurant);
+    }
 
-    //       // Initialize the PlacesService class
-    //       PlacesService placesService = PlacesService();
-
-    //       // Fetch all temples from the API
-    //       List<PlaceInfo> temples = await placesService.getPonds();
-
-    //       for (int id in recommendationIds) {
-    //         PlaceInfo pond = temples.firstWhere((ponds) => ponds.id == (id + 1));
-    //         if (pond != null) {
-    //           recommendedPonds.add(pond);
-    //         }
-    //       }
-
-    //       setState(() {
-    //         recommendations = recommendedPonds;
-    //       });
-    //     } else {
-    //       print('Request failed with status: ${response.statusCode}.');
-    //     }
-    //   }
+    return restaurants;
   }
 
   void settemples() async {
@@ -187,7 +166,7 @@ class _DashboardState extends State<Dashboard> {
 
 // Defining a function to search in the MySQL database
   Future<List<PlaceInfo>> searchInDatabase(String query) async {
-    final apiUrl = 'https://192.168.1.64/api/search.php';
+    final apiUrl = 'https://192.168.1.65/api/search.php';
 
     HttpClient httpClient = HttpClient()
       ..badCertificateCallback =
@@ -210,7 +189,8 @@ class _DashboardState extends State<Dashboard> {
           id: data['TempleID'],
           name: data['Name'], address: data['Address'], city: data['City'],
           desc: data['Description'], imageUrl: data['ImageURL'],
-          title: data['title'],
+          title: data['title'], latitude: data['Latitude'],
+          longitude: data['Longitude'],
           // Add other fields as necessary
         );
       }).toList();
@@ -254,33 +234,21 @@ class _DashboardState extends State<Dashboard> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(
-                onPressed: () => Get.to(ProfileScreen()),
-                icon: Icon(Icons.person_outline, size: 30),
+              NavButton(
+                  onPress: () => Get.to(ProfileScreen()),
+                  icon: Icons.person_outline),
+              NavButton(
+                  onPress: () => Get.to(FavoriteScreen()),
+                  icon: Icons.favorite_outline),
+              NavButton(
+                  onPress: () => () => Get.to(Dashboard()),
+                  icon: Icons.home,
+                  color: Colors.redAccent),
+              NavButton(
+                onPress: () => Get.to(Scanner()),
+                icon: Icons.list,
               ),
-              IconButton(
-                onPressed: () => Get.to(UnderConstruction()),
-                icon: Icon(Icons.favorite_outline, size: 30),
-              ),
-              IconButton(
-                onPressed: () => Get.to(Dashboard()),
-                icon: Icon(Icons.home, size: 30, color: Colors.redAccent),
-              ),
-              IconButton(
-                onPressed: () => Get.to(MapView()),
-                icon: Icon(Icons.location_on_outlined, size: 30),
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RingsPage(),
-                    ),
-                  );
-                },
-                icon: Icon(Icons.list, size: 30),
-              ),
+              NavButton(onPress: () => Get.to(RingsPage()), icon: Icons.list),
             ],
           ),
         ),
@@ -288,377 +256,417 @@ class _DashboardState extends State<Dashboard> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                /*******APP_BAR********/
-                Row(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        AuthenticationRepository.instance.logout();
-                        GoogleSignIn().signOut();
-                        Navigator.pop(context);
-                      },
-                      child: CircleAvatar(
-                        radius: 27,
-                        backgroundImage: AssetImage("assets/images/user.png"),
-                        backgroundColor: isDark ? tSecondaryClr : tAccentClr,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    RichText(
-                        text: TextSpan(
-                            text: "Hello",
-                            style: TextStyle(
-                                color: isDark ? tWhiteClr : tDarkClr,
-                                fontSize: 18),
-                            children: [
-                          TextSpan(
-                              text: ", Alexa",
-                              style: TextStyle(
-                                  color: isDark ? tWhiteClr : tDarkClr,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18))
-                        ]))
-                  ],
-                ),
-
-                /**********SEARCH_SECTION**********/
-                SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  "Explore new destination",
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Material(
-                  borderRadius: BorderRadius.circular(100),
-                  elevation: 5,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: isDark ? tSecondaryClr : tWhiteClr,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 10),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextFormField(
-                                  style: TextStyle(
-                                    color: isDark ? tPrimaryClr : tDarkClr,
-                                  ),
-                                  decoration: InputDecoration(
-                                    hintText: "Search your destination",
-                                    prefixIcon: Icon(Icons.search),
-                                    enabledBorder: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                  ),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      searchText = value;
-                                    });
-                                    searchDestination(value);
-                                  },
-                                ),
-                              ),
-                              CircleAvatar(
-                                radius: 22,
-                                backgroundColor: tPrimaryClr,
-                                child: Icon(
-                                  Icons.sort_by_alpha_sharp,
-                                  color: tWhiteClr,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+          child: ListView(
+            children: [
+              /*******APP_BAR********/
+              Row(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      AuthenticationRepository.instance.logout();
+                      GoogleSignIn().signOut();
+                      Navigator.pop(context);
+                    },
+                    child: CircleAvatar(
+                      radius: 27,
+                      backgroundImage: AssetImage("assets/images/user.png"),
+                      backgroundColor: isDark ? tSecondaryClr : tAccentClr,
                     ),
                   ),
-                ),
-                SizedBox(height: 8),
-                if (searchText.isNotEmpty && data.isNotEmpty)
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    color: Colors.grey.shade100,
-                    child: Column(
-                      children: [
-                        Text(
-                          'Search Results',
+                  SizedBox(
+                    width: 15,
+                  ),
+                  RichText(
+                      text: TextSpan(
+                          text: "Hello",
                           style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                              color: isDark ? tWhiteClr : tDarkClr,
+                              fontSize: 18),
+                          children: [
+                        TextSpan(
+                            text: ", Alexa",
+                            style: TextStyle(
+                                color: isDark ? tWhiteClr : tDarkClr,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18))
+                      ]))
+                ],
+              ),
+
+              /**********SEARCH_SECTION**********/
+              SizedBox(
+                height: 15,
+              ),
+              Text(
+                "Explore new destination",
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              searchBar(isDark),
+              SizedBox(height: 8),
+              if (searchText.isNotEmpty && data.isNotEmpty)
+                searchResult(isDark),
+
+              /***************CATEGORY***********/
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  Text("Popular Destinations", style: txtTheme.headlineMedium),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                height: 60,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    Row(
+                      children: [
+                        CategoryCard(
+                          press: () {
+                            settemples();
+                          },
+                          image: "assets/images/temple.jpg",
+                          title: "Temples",
                         ),
-                        SizedBox(height: 10),
-                        Container(
-                          height: 200,
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(horizontal: 8),
-                          child: SingleChildScrollView(
-                            child: ListView.separated(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: data.length,
-                              separatorBuilder: (context, index) => Divider(
-                                color: Colors.grey,
-                                height: 1,
-                              ),
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                  contentPadding: EdgeInsets.zero,
-                                  leading: Icon(Icons.location_on, size: 20),
-                                  title: Text(
-                                    data[index].name,
-                                    style: TextStyle(fontSize: 14),
-                                  ),
-                                  subtitle: Text(
-                                    data[index].address,
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DetailScreen(
-                                          placeInfo: data[index],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              //itemCount: 60, // Adjust this value as needed
-                            ),
-                          ),
+                        CategoryCard(
+                          press: () {
+                            setponds();
+                          },
+                          image: "assets/images/pond.jpg",
+                          title: "Ponds",
+                        ),
+                        CategoryCard(
+                          press: () {
+                            setchowks();
+                          },
+                          image: "assets/images/chwo.webp",
+                          title: "chowks",
+                        ),
+                        CategoryCard(
+                          press: () {
+                            setmeseums();
+                          },
+                          image: "assets/images/meu.webp",
+                          title: "Mesuems",
+                        ),
+                        CategoryCard(
+                          press: () {
+                            setstatues();
+                          },
+                          image: "assets/images/stat.jpg",
+                          title: "Statues",
                         ),
                       ],
                     ),
-                  ),
-                SizedBox(height: 8),
-                if (searchText.isNotEmpty && data.isEmpty)
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    color: Colors.grey.shade200,
-                    child: Text(
-                      'No results found',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-
-                /***************CATEGORY***********/
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  children: [
-                    Text("Category", style: txtTheme.headlineMedium),
                   ],
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  height: 60,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      Row(
-                        children: [
-                          CategoryCard(
-                            press: () {
-                              settemples();
-                            },
-                            image: "assets/images/temple.jpg",
-                            title: "Temples",
-                          ),
-                          CategoryCard(
-                            press: () {
-                              setponds();
-                            },
-                            image: "assets/images/pond.jpg",
-                            title: "Ponds",
-                          ),
-                          CategoryCard(
-                            press: () {
-                              setchowks();
-                            },
-                            image: "assets/images/chwo.webp",
-                            title: "chowks",
-                          ),
-                          CategoryCard(
-                            press: () {
-                              setmeseums();
-                            },
-                            image: "assets/images/meu.webp",
-                            title: "Mesuems",
-                          ),
-                          CategoryCard(
-                            press: () {
-                              setstatues();
-                            },
-                            image: "assets/images/stat.jpg",
-                            title: "Statues",
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                    height: 290,
-                    child: ListView.builder(
-                        itemCount: places.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(left: 5, right: 15),
-                            child: Row(
-                              children: [
-                                RecommendedCard(
-                                  placeInfo: places[index],
-                                  press: () {
-                                    Navigator.push(
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: 308,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: List.generate(
+                      (places.length / 2).ceil(),
+                      (rowIndex) {
+                        final startIndex = rowIndex * 2;
+                        final endIndex = (startIndex + 1) < places.length
+                            ? startIndex + 1
+                            : startIndex;
+
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            if (startIndex < places.length)
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: RecommendedCard(
+                                    placeInfo: places[startIndex],
+                                    press: () {
+                                      Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => DetailScreen(
-                                                  placeInfo: places[index],
-                                                )));
-                                  },
-                                )
-                              ],
-                            ),
-                          );
-                        })),
+                                          builder: (context) => DetailScreen(
+                                            placeInfo: places[startIndex],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            if (endIndex < places.length)
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: RecommendedCard(
+                                    placeInfo: places[endIndex],
+                                    press: () {
+                                      print('zehahah');
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DetailScreen(
+                                            placeInfo: places[endIndex],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
 
 /****************Events****************/
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Text(
+                    "Events",
+                    style: txtTheme.headlineMedium,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: 60,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
                   children: [
-                    Text(
-                      "Events",
-                      style: txtTheme.headlineMedium,
+                    Row(
+                      children: [
+                        CategoryCard(
+                          press: () {
+                            setAllEvents();
+                          },
+                          image: "assets/images/temple.jpg",
+                          title: "All Events",
+                        ),
+                        CategoryCard(
+                          press: () {
+                            setUpcomingEvents();
+                          },
+                          image: "assets/images/pond.jpg",
+                          title: "Upcoming Events",
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  height: 60,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      Row(
-                        children: [
-                          CategoryCard(
-                            press: () {
-                              setAllEvents();
-                            },
-                            image: "assets/images/temple.jpg",
-                            title: "All Events",
-                          ),
-                          CategoryCard(
-                            press: () {
-                              setUpcomingEvents();
-                            },
-                            image: "assets/images/pond.jpg",
-                            title: "Upcoming Events",
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                    height: 300,
-                    child: ListView.builder(
-                        itemCount: places.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(left: 5, right: 15),
-                            child: Row(
-                              children: [
-                                RecommendedForEvent(
-                                  placeInfo: allEvents[index],
-                                  press: () {
-                                    Navigator.push(
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                height: 308,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: List.generate(
+                      (allEvents.length / 2).ceil(),
+                      (rowIndex) {
+                        final startIndex = rowIndex * 2;
+                        final endIndex = (startIndex + 1) < allEvents.length
+                            ? startIndex + 1
+                            : startIndex;
+
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            if (startIndex < allEvents.length)
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: RecommendedForEvent(
+                                    placeInfo: allEvents[startIndex],
+                                    press: () {
+                                      Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => DetailScreen(
-                                                placeInfo: allEvents[index])));
-                                  },
-                                )
-                              ],
-                            ),
-                          );
-                        })),
-
-                /********RECOMMENDED****************/
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
-                    Text(
-                      "Recommendation",
-                      style: txtTheme.headlineMedium,
-                    ),
-                  ],
-                ),
-                Container(
-                  height: 300,
-                  child: ListView.builder(
-                    itemCount: recommendations.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 5, right: 15),
-                        child: Expanded(
-                          child: Row(
-                            children: [
-                              RecommendedCard(
-                                placeInfo: recommendations[index],
-                                press: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => DetailScreen(
-                                        placeInfo: recommendations[index],
-                                      ),
-                                    ),
-                                  );
-                                },
+                                          builder: (context) => DetailForEvent(
+                                            placeInfo: allEvents[startIndex],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
                               ),
-                            ],
+                            if (endIndex < allEvents.length)
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: RecommendedForEvent(
+                                    placeInfo: allEvents[endIndex],
+                                    press: () {
+                                      print('zehahah');
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => DetailForEvent(
+                                            placeInfo: allEvents[endIndex],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container searchResult(bool isDark) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: isDark ? tSecondaryClr : Colors.grey.shade100,
+        borderRadius:
+            BorderRadius.circular(20), // Add this line for rounded corners
+      ),
+      child: Column(
+        children: [
+          Text(
+            'Search Results',
+            style: TextStyle(
+              color: isDark ? tCardBgClr : tDarkClr,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 10),
+          Container(
+            height: 200,
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: SingleChildScrollView(
+              child: ListView.separated(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: data.length,
+                separatorBuilder: (context, index) => Divider(
+                  color: Colors.grey,
+                  height: 1,
+                ),
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(
+                      Icons.location_on,
+                      size: 20,
+                      color: isDark ? tCardBgClr : tDarkClr,
+                    ),
+                    title: Text(
+                      data[index].name!,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDark ? tCardBgClr : tDarkClr,
+                      ),
+                    ),
+                    subtitle: Text(
+                      data[index].address!,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? tCardBgClr : tDarkClr,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailScreen(
+                            placeInfo: data[index],
                           ),
                         ),
                       );
                     },
-                  ),
-                ),
-              ],
+                  );
+                },
+              ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Material searchBar(bool isDark) {
+    return Material(
+      borderRadius: BorderRadius.circular(100),
+      elevation: 5,
+      child: Container(
+        decoration: BoxDecoration(
+          color: isDark ? tSecondaryClr : tWhiteClr,
+          borderRadius: BorderRadius.circular(100),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      style: TextStyle(
+                        color: isDark ? tPrimaryClr : tDarkClr,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: "Search your destination",
+                        prefixIcon: Icon(Icons.search),
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          searchText = value;
+                        });
+                        searchDestination(value);
+                      },
+                    ),
+                  ),
+                  CircleAvatar(
+                    radius: 22,
+                    backgroundColor: tPrimaryClr,
+                    child: Icon(
+                      Icons.sort_by_alpha_sharp,
+                      color: tWhiteClr,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

@@ -6,10 +6,12 @@ import '../../features/authentication/models/place_modal.dart';
 class RecommendedCard extends StatelessWidget {
   final PlaceInfo placeInfo;
   final VoidCallback press;
+  final String? imageUrl;
   const RecommendedCard({
     Key? key, // Corrected argument name
     required this.placeInfo,
     required this.press,
+    this.imageUrl,
   }) : super(key: key); // Added 'super(key: key)' argument
 
   @override
@@ -40,14 +42,14 @@ class RecommendedCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: NetworkImage(placeInfo.imageUrl))),
+                          image: NetworkImage(placeInfo.imageUrl!))),
                 ),
                 SizedBox(
                   height: 20,
                 ),
                 Text(
-                  placeInfo.name,
-                  style: Theme.of(context).textTheme.titleLarge,
+                  placeInfo.name!,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 SizedBox(
                   height: 8.0,
@@ -59,7 +61,7 @@ class RecommendedCard extends StatelessWidget {
                       color: tPrimaryClr,
                     ),
                     Text(
-                      placeInfo.address,
+                      placeInfo.address!,
                       style: TextStyle(color: Colors.grey, fontSize: 15),
                     )
                   ],

@@ -3,6 +3,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+
 
 
    <application
@@ -12,7 +15,7 @@
         
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBfRbRmSxQQT_DrfuMKyjn5hViVRUSupSA" />
+            android:value="AIzaSyCxWUj8p1mc6ctC6BcPHAb6sPYpichInyU" />
         <meta-data
     android:name="com.google.android.gms.version"
     android:value="@integer/google_play_services_version" />

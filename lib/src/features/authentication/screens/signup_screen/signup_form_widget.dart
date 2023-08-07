@@ -27,6 +27,10 @@ class SignUpFormWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(SignUpController());
     final _formKey = GlobalKey<FormState>();
+    controller.fullName.clear();
+    controller.email.clear();
+    controller.phoneNo.clear();
+    controller.password.clear();
     return Container(
       padding: EdgeInsets.symmetric(vertical: tFormHeight - 10),
       child: Form(

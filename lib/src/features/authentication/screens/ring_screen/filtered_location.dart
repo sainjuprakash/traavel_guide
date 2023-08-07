@@ -20,7 +20,7 @@ class FilteredLocation {
 
 class LocationScreen {
   late final PlaceInfo placeInfo;
-  late String title = placeInfo.title;
+  late String title = placeInfo.title!;
   final double searchRadius = 100.0;
   static List<FilteredLocation> locations = [];
 
