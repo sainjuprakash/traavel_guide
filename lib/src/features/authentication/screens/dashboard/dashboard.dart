@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:login_setup/src/common_widgets/cards/category_card.dart';
@@ -24,6 +25,7 @@ class Dashboard extends StatefulWidget {
 // final PlaceInfo placeInfo;
   @override
   State<Dashboard> createState() => _DashboardState();
+
 }
 
 class _DashboardState extends State<Dashboard> {
@@ -41,6 +43,7 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
+    FlutterNativeSplash.remove();
     // TODO: implement initState
     super.initState();
     settemples();

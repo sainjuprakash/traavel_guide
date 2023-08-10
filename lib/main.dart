@@ -10,6 +10,7 @@ import 'package:login_setup/src/utils/theme/theme.dart';
 import 'package:lottie/lottie.dart';
 
 void main() async {
+  await Future.delayed(Duration(milliseconds:500));
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
